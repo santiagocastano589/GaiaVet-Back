@@ -1,9 +1,9 @@
 import { Sequelize } from 'sequelize';
 
 const sequelize = new Sequelize({
-  database: 'gaiaVet',
+  database: 'GaiaVet',
   username: 'root',
-  password: 'Sena1234',
+  password: '1111',
   host: 'localhost', 
   dialect: 'mysql',
 });

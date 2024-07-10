@@ -1,13 +1,12 @@
 import { Router } from 'express';
-import { getAllUsers,createUser,findOneUser,updateUser,deleteUser } from '../controllers/userController';
+import { getAllUsers, createUser, findOneUser, updateUser, deleteUser } from '../controllers/userController';
 
 const router = Router();
 
-router.get('/usuarios', getAllUsers);// Ruta para obtener todos los usuarios
-router.post('/usuarios',createUser) // Crear un usuario
-router.post('/usuario/buscar',findOneUser) // Crear un usuario
-router.post('/usuario/actualizarDatos/:cedula',updateUser)// Acualizar Datos De Un Usuario xd
-router.post('/usuario/eliminarUsuario/:cedula',deleteUser) //Eliminar Un Usuario :D
+router.get('/usuarios', getAllUsers); // Ruta para obtener todos los usuarios
+router.post('/usuarios', createUser); // Crear un usuario
+router.get('/usuario/:cedula', findOneUser); // Buscar un usuario por cedula
+router.put('/usuario/:cedula', updateUser); // Actualizar datos de un usuario
+router.delete('/usuario/:cedula', deleteUser); // Eliminar un usuario
 
 export default router;
-
