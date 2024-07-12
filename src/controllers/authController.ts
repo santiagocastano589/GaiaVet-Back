@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import User from '../models/userModel';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import validator from 'validator';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key';
 
@@ -9,6 +10,16 @@ export const registerUser = async (req: Request, res: Response): Promise<Respons
   try {
     const { cedula, nombre, apellido, correo, contraseña, direccion, telefono, estado } = req.body;
     const newUser = await User.create({ cedula, nombre, apellido, correo, contraseña, direccion, telefono, estado });
+
+    if (!validator.isEmail(correo)) {
+      return res.status(400).json({ message: 'Correo no válido' });
+    }
+
+    // // Validar la longitud de la contraseña
+    // if (contraseña.length < 8) {
+    //   return res.status(400).json({ message: 'La contraseña debe tener al menos 8 caracteres' });
+    // }
+
     return res.status(201).json(newUser);
   } catch (error) {
     console.error(error);
@@ -24,6 +35,11 @@ export const loginUser = async (req: Request, res: Response): Promise<Response> 
     if (!user) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
+
+    if (!validator.isEmail(correo)) {
+      return res.status(400).json({ message: 'Correo no válido' });
+    }
+    
 
     const isMatch = await bcrypt.compare(contraseña, user.contraseña);
 
