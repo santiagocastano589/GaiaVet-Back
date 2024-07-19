@@ -29,6 +29,9 @@ app.use(cors());
 
 app.use('/', userRoutes);
 app.use('/auth', authRoutes); // Usa las rutas de autenticación
+app.get('/', (req, res) => {
+  res.send('GaiaVet')
+});
 
 app.listen(port, () => {
   async function testConnection() {

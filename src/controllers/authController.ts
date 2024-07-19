@@ -2,20 +2,25 @@ import { Request, Response } from 'express';
 import User from '../models/userModel';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import validator from 'validator';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key';
 
+const validateEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+
 export const registerUser = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const { cedula, nombre, apellido, correo, contraseña, direccion, telefono, estado } = req.body;
-    const newUser = await User.create({ cedula, nombre, apellido, correo, contraseña, direccion, telefono, estado });
+    const { cedula, nombre, apellido, correo, contraseña, direccion, telefono } = req.body;
 
-    if (!validator.isEmail(correo)) {
-      return res.status(400).json({ message: 'Correo no válido' });
+    if (!validateEmail(correo)) {
+      return res.status(400).json({ message: 'Correo electrónico inválido' });
     }
 
    
+    const newUser = await User.create({ cedula, nombre, apellido, correo, contraseña, direccion, telefono });
 
     return res.status(201).json(newUser);
   } catch (error) {
@@ -24,19 +29,20 @@ export const registerUser = async (req: Request, res: Response): Promise<Respons
   }
 };
 
+
 export const loginUser = async (req: Request, res: Response): Promise<Response> => {
   try {
     const { correo, contraseña } = req.body;
+
+    if (!validateEmail(correo)) {
+      return res.status(400).json({ message: 'Correo electrónico inválido' });
+    }
+
     const user = await User.findOne({ where: { correo } });
 
     if (!user) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
-
-    if (!validator.isEmail(correo)) {
-      return res.status(400).json({ message: 'Correo no válido' });
-    }
-    
 
     const isMatch = await bcrypt.compare(contraseña, user.contraseña);
 
@@ -51,3 +57,4 @@ export const loginUser = async (req: Request, res: Response): Promise<Response> 
     return res.status(500).json({ message: 'Error al iniciar sesión' });
   }
 };
+
