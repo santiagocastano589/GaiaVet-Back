@@ -3,13 +3,14 @@ import User from '../models/userModel';
 
 
 
+
 export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
     try {
       const users = await User.findAll();
       res.status(200).json(users); 
     } catch (error: any) {
       console.error('Error fetching users: ', error);
-      res.status(500).json({ message: 'Error fetching users.' });
+      res.status(500).json({ message: 'Error fetching users.' });      
     }
   };
 

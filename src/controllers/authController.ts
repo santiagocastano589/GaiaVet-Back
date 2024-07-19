@@ -15,10 +15,7 @@ export const registerUser = async (req: Request, res: Response): Promise<Respons
       return res.status(400).json({ message: 'Correo no válido' });
     }
 
-    // // Validar la longitud de la contraseña
-    // if (contraseña.length < 8) {
-    //   return res.status(400).json({ message: 'La contraseña debe tener al menos 8 caracteres' });
-    // }
+   
 
     return res.status(201).json(newUser);
   } catch (error) {
@@ -50,7 +47,7 @@ export const loginUser = async (req: Request, res: Response): Promise<Response> 
     const token = jwt.sign({ cedula: user.cedula }, JWT_SECRET, { expiresIn: '1h' });
     return res.status(200).json({ token });
   } catch (error) {
-    console.error('Error during login: ', error);
+    console.error('Error al loguearse: ', error);
     return res.status(500).json({ message: 'Error al iniciar sesión' });
   }
 };
