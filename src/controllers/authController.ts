@@ -13,14 +13,14 @@ const validateEmail = (email: string): boolean => {
 
 export const registerUser = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const { cedula, nombre, apellido, correo, contraseña, direccion, telefono } = req.body;
+    const { cedula, nombre, apellido, correo, contraseña, direccion, telefono,estado } = req.body;
 
     if (!validateEmail(correo)) {
       return res.status(400).json({ message: 'Correo electrónico inválido' });
     }
 
    
-    const newUser = await User.create({ cedula, nombre, apellido, correo, contraseña, direccion, telefono });
+    const newUser = await User.create({ cedula, nombre, apellido, correo, contraseña, direccion, telefono,estado });
 
     return res.status(201).json(newUser);
   } catch (error) {
