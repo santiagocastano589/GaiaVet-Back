@@ -4,17 +4,19 @@ import jwt from 'jsonwebtoken';
 const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key';
 
 export const authenticate = (req: Request, res: Response, next: NextFunction) => {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // Formato del token: Bearer <token>
 
-  if (!token) {
-    return res.status(401).json({ message: 'Acceso denegado. No se proporcionó token.' });
+  if (token == null) {
+    return res.sendStatus(401); // Unauthorized si no hay token
   }
 
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    req.user = decoded;
-    next();
-  } catch (error) {
-    res.status(401).json({ message: 'Token inválido.' });
-  }
+  jwt.verify(token, JWT_SECRET, (err, user) => {
+    if (err) {
+      console.error('Error al verificar token:', err);
+      return res.sendStatus(403); // Forbidden si el token no es válido
+    }
+    (req as any).user = user;
+    next(); // Pasar al siguiente middleware o controlador
+  });
 };

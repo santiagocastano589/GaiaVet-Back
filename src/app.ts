@@ -25,11 +25,11 @@ app.use(cors());
   allowedHeaders: ['Authorization'] // Permitir solo estos encabezados
 };*/
 
-//app.use(authenticate)
 
 app.use('/', userRoutes);
 app.use('/auth', authRoutes); // Usa las rutas de autenticación
 app.get('/', (req, res) => {
+ 
   res.send('GaiaVet')
 });
 
