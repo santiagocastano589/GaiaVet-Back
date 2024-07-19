@@ -7,6 +7,7 @@ import User from './models/userModel';
 import { authenticate } from './middlewares/authMiddlaware';
 import sequelize from './db/connection';
 import cors, { CorsOptions } from 'cors';
+
 User.initModel();
 
 

@@ -2,8 +2,10 @@ import { Request, Response } from 'express';
 import User from '../models/userModel';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key';
+const JWT_SECRET = "clavemamalona";
 
 const validateEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -60,7 +62,7 @@ export const loginUser = async (req: Request, res: Response): Promise<Response> 
     res.setHeader('Authorization', `Bearer ${token}`);
 
     // Devolver una respuesta con el nombre del usuario u otra información relevante
-    return res.status(200).json({ nombre: user.nombre });
+    return res.status(200).json({ nombre: user.nombre , token:token});
   } catch (error) {
     console.error('Error al loguearse:', error);
     return res.status(500).json({ message: 'Error al iniciar sesión' });

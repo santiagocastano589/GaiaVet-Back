@@ -1,22 +1,28 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key';
+// Reemplaza 'YOUR_SECRET_KEY' con tu clave secreta
+const JWT_SECRET = "clavemamalona";
 
-export const authenticate = (req: Request, res: Response, next: NextFunction) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // Formato del token: Bearer <token>
+export interface CustomRequest extends Request {
+    user?: any;
+}
 
-  if (token == null) {
-    return res.sendStatus(401); // Unauthorized si no hay token
-  }
+export const authenticate = (req: CustomRequest, res: Response, next: NextFunction) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
 
-  jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) {
-      console.error('Error al verificar token:', err);
-      return res.sendStatus(403); // Forbidden si el token no es válido
+    if (!token) {
+        return res.status(401).json({ message: 'Acceso denegado, token no proporcionado' });
     }
-    (req as any).user = user;
-    next(); // Pasar al siguiente middleware o controlador
-  });
+
+    jwt.verify(token, JWT_SECRET, (err, user) => {
+        if (err) {
+
+            return res.status(403).json({ message: 'Token no válido' });
+        }
+
+        req.user = user;
+        next();
+    });
 };

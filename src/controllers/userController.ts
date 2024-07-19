@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import User from '../models/userModel';
-
+import {CustomRequest} from '../middlewares/authMiddlaware'
 
 
 
@@ -97,7 +97,7 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
 
 ;
 
-export const me = async (req: Request, res: Response): Promise<Response> => {
+export const me = async (req: CustomRequest, res: Response): Promise<Response> => {
   try {
     
     // El usuario decodificado del token está disponible en req['user']
