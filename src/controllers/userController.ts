@@ -69,9 +69,9 @@ export const me = async (req: CustomRequest, res: Response): Promise<Response> =
   }
 };
 
-export const updateUser = async (req: Request, res: Response): Promise<Response> => {
+export const updateUser = async (req: CustomRequest, res: Response): Promise<Response> => {
   try {
-    const { cedula } = req.params;
+    const { cedula } = req.user; // Obtener la cédula del usuario autenticado desde el token
     const { nombre, apellido, correo, contraseña, direccion, telefono, estado } = req.body;
 
     const user = await User.findOne({ where: { cedula } });
@@ -103,4 +103,3 @@ export const updateUser = async (req: Request, res: Response): Promise<Response>
     return res.status(500).json({ message: 'Error al actualizar usuario' });
   }
 };
-

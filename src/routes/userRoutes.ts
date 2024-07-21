@@ -8,7 +8,7 @@ const router = Router();
 router.get('/usuarios', getAllUsers); // Ruta para obtener todos los usuarios
 router.post('/register', createUser); // Crear un usuario
 router.get('/usuario/:cedula', findOneUser); // Buscar un usuario por cedula
-router.put('/usuario/:cedula', updateUser); // Actualizar un usuario por cédula
+router.put('/usuario', authenticate, updateUser); // Actualizar un usuario autenticado
 
 router.get('/me',authenticate, me );
 

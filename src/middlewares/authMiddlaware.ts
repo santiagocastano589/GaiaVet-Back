@@ -17,7 +17,6 @@ export const authenticate = (req: CustomRequest, res: Response, next: NextFuncti
 
     jwt.verify(token, JWT_SECRET, (err, user) => {
         if (err) {
-
             return res.status(403).json({ message: 'Token no válido' });
         }
 
