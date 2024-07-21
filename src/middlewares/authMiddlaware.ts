@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-// Reemplaza 'YOUR_SECRET_KEY' con tu clave secreta
 const JWT_SECRET = "clavemamalona";
 
 export interface CustomRequest extends Request {
