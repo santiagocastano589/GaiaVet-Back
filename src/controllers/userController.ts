@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import User from '../models/userModel';
 import {CustomRequest} from '../middlewares/authMiddlaware'
 import bcrypt from 'bcrypt';
+import { where } from 'sequelize';
 
 
 const JWT_SECRET = "clavemamalona";
@@ -103,3 +104,4 @@ export const updateUser = async (req: CustomRequest, res: Response): Promise<Res
     return res.status(500).json({ message: 'Error al actualizar usuario' });
   }
 };
+
