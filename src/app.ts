@@ -1,7 +1,6 @@
 import express, { Application } from 'express';
 import bodyParser from 'body-parser';
 import userRoutes from './routes/userRoutes';
-import authRoutes from './routes/authRoutes'; // Importa las rutas de autenticación
 import dotenv from 'dotenv';
 import User from './models/userModel';
 import { authenticate } from './middlewares/authMiddlaware';
@@ -28,9 +27,7 @@ app.use(cors());
 
 
 app.use('/', userRoutes);
-app.use('/auth', authRoutes); // Usa las rutas de autenticación
 app.get('/', (req, res) => {
- 
   res.send('GaiaVet')
 });
 

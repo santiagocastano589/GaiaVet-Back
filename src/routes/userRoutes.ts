@@ -1,14 +1,12 @@
 import { Router } from 'express';
-import { getAllUsers, createUser, findOneUser, updateUser, me} from '../controllers/userController';
+import { createUser, updateUser, me,deleteAcount,registerUser,loginUser} from '../controllers/userController';
 import { authenticate,CustomRequest } from '../middlewares/authMiddlaware';
-import { loginUser } from '../controllers/authController';
 
 const router = Router();
-
-router.get('/usuarios', getAllUsers); // Ruta para obtener todos los usuarios
+router.post('/register', registerUser);
+router.post('/login', loginUser);
 router.post('/register', createUser); // Crear un usuario
-router.get('/usuario/:cedula', findOneUser); // Buscar un usuario por cedula
 router.put('/usuario', authenticate, updateUser); // Actualizar un usuario autenticado
 router.get('/me',authenticate, me );
-
+router.delete('/me/deleteAcount',authenticate,deleteAcount)
 export default router;
