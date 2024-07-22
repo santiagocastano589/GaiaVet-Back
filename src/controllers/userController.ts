@@ -1,8 +1,16 @@
 import { Request, Response } from 'express';
 import User from '../models/userModel';
+import {CustomRequest} from '../middlewares/authMiddlaware'
+import bcrypt from 'bcrypt';
+import { where } from 'sequelize';
 
 
+const JWT_SECRET = "clavemamalona";
 
+const validateEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
 
 export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -40,48 +48,60 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
       res.status(500).json({ message: 'Error al encontrar el usuario.' });
     }
   };
+ 
 
-  export const updateUser = async (req: Request, res: Response): Promise<void> => {
-    const { cedula } = req.params;
-    const { nombre, apellido, correo, contraseña, direccion, telefono } = req.body;
-  
-    try {
-      const user = await User.findByPk(cedula);
-  
-      if (user) {
-        await user.update({
-          nombre,
-          apellido,
-          correo,
-          contraseña,
-          direccion,
-          telefono,
-        });
-  
-        const updatedUser = await User.findByPk(cedula);
-        res.status(200).json(updatedUser);
-      } else {
-        res.status(404).json({ message: 'Usuario no encontrado' });
-      }
-    } catch (error: any) {
-      console.error('Error updating user: ', error);
-      res.status(500).json({ message: 'Error al actualizar el usuario' });
-    }
-  };
-export const deleteUser = async (req: Request, res: Response): Promise<void> => {
-  const { cedula } = req.params;
-
+export const me = async (req: CustomRequest, res: Response): Promise<Response> => {
   try {
-    const user = await User.findByPk(cedula);
+    
+    // El usuario decodificado del token está disponible en req['user']
+    const cedula = req['user']['cedula'];
 
-    if (user) {
-      await user.update({estado:false});
-      res.status(200).json({ message: 'Usuario eliminado exitosamente' });
-    } else {
-      res.status(404).json({ message: 'Usuario no encontrado' });
+    // Buscar al usuario en la base de datos usando el campo único, como cédula en este caso
+    const user = await User.findOne({ where: { cedula } });
+
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
     }
-  } catch (error: any) {
-    console.error('Error deleting user: ', error);
-    res.status(500).json({ message: 'Error al eliminar el usuario' });
+
+    return res.status(200).json({ nombre: user.nombre, apellido: user.apellido, correo: user.correo });
+  } catch (error) {
+    console.error('Error al obtener usuario:', error);
+    return res.status(500).json({ message: 'Error al obtener usuario' });
   }
 };
+
+export const updateUser = async (req: CustomRequest, res: Response): Promise<Response> => {
+  try {
+    const { cedula } = req.user; // Obtener la cédula del usuario autenticado desde el token
+    const { nombre, apellido, correo, contraseña, direccion, telefono, estado } = req.body;
+
+    const user = await User.findOne({ where: { cedula } });
+
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    if (correo && !validateEmail(correo)) {
+      return res.status(400).json({ message: 'Correo electrónico inválido' });
+    }
+
+    if (nombre) user.nombre = nombre;
+    if (apellido) user.apellido = apellido;
+    if (correo) user.correo = correo;
+    if (contraseña) {
+      const salt = await bcrypt.genSalt(10);
+      user.contraseña = await bcrypt.hash(contraseña, salt);
+    }
+    if (direccion) user.direccion = direccion;
+    if (telefono) user.telefono = telefono;
+    if (typeof estado === 'boolean') user.estado = estado;
+
+    await user.save();
+
+    return res.status(200).json({ message: 'Usuario actualizado correctamente', user });
+  } catch (error) {
+    console.error('Error al actualizar usuario:', error);
+    return res.status(500).json({ message: 'Error al actualizar usuario' });
+  }
+};
+
