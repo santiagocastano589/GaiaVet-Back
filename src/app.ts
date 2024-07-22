@@ -7,6 +7,7 @@ import User from './models/userModel';
 import { authenticate } from './middlewares/authMiddlaware';
 import sequelize from './db/connection';
 import cors, { CorsOptions } from 'cors';
+
 User.initModel();
 
 
@@ -25,11 +26,11 @@ app.use(cors());
   allowedHeaders: ['Authorization'] // Permitir solo estos encabezados
 };*/
 
-//app.use(authenticate)
 
 app.use('/', userRoutes);
 app.use('/auth', authRoutes); // Usa las rutas de autenticación
 app.get('/', (req, res) => {
+ 
   res.send('GaiaVet')
 });
 

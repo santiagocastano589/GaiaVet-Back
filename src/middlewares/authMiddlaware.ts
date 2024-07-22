@@ -1,20 +1,26 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key';
+const JWT_SECRET = "clavemamalona";
 
-export const authenticate = (req: Request, res: Response, next: NextFunction) => {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
+export interface CustomRequest extends Request {
+    user?: any;
+}
 
-  if (!token) {
-    return res.status(401).json({ message: 'Acceso denegado. No se proporcionó token.' });
-  }
+export const authenticate = (req: CustomRequest, res: Response, next: NextFunction) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
 
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    req.user = decoded;
-    next();
-  } catch (error) {
-    res.status(401).json({ message: 'Token inválido.' });
-  }
+    if (!token) {
+        return res.status(401).json({ message: 'Acceso denegado, token no proporcionado' });
+    }
+
+    jwt.verify(token, JWT_SECRET, (err, user) => {
+        if (err) {
+            return res.status(403).json({ message: 'Token no válido' });
+        }
+
+        req.user = user;
+        next();
+    });
 };
