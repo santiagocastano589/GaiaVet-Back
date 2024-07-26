@@ -1,5 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../db/connection';
+import bcrypt from 'bcrypt';
+
 
 interface EmpleadoAttributes {
   cedulaEmpleado: string;
@@ -8,8 +10,8 @@ interface EmpleadoAttributes {
   edad: number;
   tiempoExp: string;
   correo: string;
-  contrasena: string;
-  fk_idServicioE: number;
+  contraseña: string;
+  role:string;
 }
 
 class Empleado extends Model<EmpleadoAttributes> implements EmpleadoAttributes {
@@ -19,8 +21,9 @@ class Empleado extends Model<EmpleadoAttributes> implements EmpleadoAttributes {
   public edad!: number;
   public tiempoExp!: string;
   public correo!: string;
-  public contrasena!: string;
-  public fk_idServicioE!: number;
+  public contraseña!: string;
+  public role!: string;
+
 
   static initModel(): void {
     this.init(
@@ -46,27 +49,28 @@ class Empleado extends Model<EmpleadoAttributes> implements EmpleadoAttributes {
           allowNull: false,
         },
         correo: {
-          type: DataTypes.STRING(20),
+          type: DataTypes.STRING(50),
           allowNull: false,
         },
-        contrasena: {
-          type: DataTypes.STRING(20),
+        contraseña: {
+          type: DataTypes.STRING(60),
           allowNull: false,
         },
-        fk_idServicioE: {
-          type: DataTypes.INTEGER.UNSIGNED,
-          allowNull: false,
-          references: {
-            model: 'servicio', // Nombre de la tabla de referencia
-            key: 'idServicio',
-          },
-        },
+        role:{
+          type:DataTypes.STRING(20),
+          defaultValue:'Empleado'
+        }
       },
       {
         sequelize,
         tableName: 'empleado', // Nombre de la tabla en MySQL
-        timestamps: false, // Deshabilitar campos createdAt y updatedAt
-        underscored: true, // Utilizar nombres de columna en snake_case
+        timestamps: false ,// Deshabilitar campos createdAt y updatedAt
+        hooks: {
+          beforeCreate: async (user: Empleado) => {
+            const salt = await bcrypt.genSalt(10);
+            user.contraseña = await bcrypt.hash(user.contraseña, salt);
+          },
+        },
       }
     );
   }

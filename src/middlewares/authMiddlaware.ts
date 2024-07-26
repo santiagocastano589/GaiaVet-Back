@@ -1,10 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import User from '../models/userModel'
+import Empleado from '../models/empleadoModel';
 
 const JWT_SECRET = "clavemamalona";
 
+
 export interface CustomRequest extends Request {
     user?: any;
+    
 }
 
 export const authenticate = (req: CustomRequest, res: Response, next: NextFunction) => {

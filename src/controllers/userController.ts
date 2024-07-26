@@ -25,8 +25,8 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
 
   export const createUser = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { cedula, nombre, apellido, correo, contraseña, direccion, telefono, estado } = req.body;
-      const newUser = await User.create({ cedula, nombre, apellido, correo, contraseña, direccion, telefono,estado  });
+      const { cedula, nombre, apellido, correo, contraseña, direccion, telefono, estado, role } = req.body;
+      const newUser = await User.create({ cedula, nombre, apellido, correo, contraseña, direccion, telefono,estado ,role });
       res.status(201).json(newUser);
     } catch (error) {
       console.error(error); 
