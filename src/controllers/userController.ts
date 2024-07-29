@@ -3,6 +3,7 @@ import User from '../models/userModel';
 import {CustomRequest} from '../middlewares/authMiddlaware'
 import bcrypt from 'bcrypt';
 import { where } from 'sequelize';
+import Admin from '../models/adminModel';
 
 
 const JWT_SECRET = "clavemamalona";
@@ -56,8 +57,11 @@ export const me = async (req: CustomRequest, res: Response): Promise<Response> =
     // El usuario decodificado del token está disponible en req['user']
     const correo = req['user']['correo'];
 
+    let user = await User.findOne({ where: { correo } });
+
+
+   
     // Buscar al usuario en la base de datos usando el campo único, como cédula en este caso
-    const user = await User.findOne({ where: { correo } });
 
     if (!user) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
@@ -72,10 +76,10 @@ export const me = async (req: CustomRequest, res: Response): Promise<Response> =
 
 export const updateUser = async (req: CustomRequest, res: Response): Promise<Response> => {
   try {
-    const { cedula } = req.user; // Obtener la cédula del usuario autenticado desde el token
-    const { nombre, apellido, correo, contraseña, direccion, telefono, estado } = req.body;
+    const { correo } = req.user; // Obtener la cédula del usuario autenticado desde el token
+    const { nombre, apellido, contraseña, direccion, telefono, estado } = req.body;
 
-    const user = await User.findOne({ where: { cedula } });
+    const user = await User.findOne({ where: { correo } });
 
     if (!user) {
       return res.status(404).json({ message: 'Usuario no encontrado' });

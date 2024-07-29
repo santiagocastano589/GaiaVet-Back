@@ -26,7 +26,6 @@ export const authenticate = (req: CustomRequest, res: Response, next: NextFuncti
         }
 
         req.user = user;
-        console.log(user);
         
         next();
     });
