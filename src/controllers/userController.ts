@@ -54,10 +54,10 @@ export const me = async (req: CustomRequest, res: Response): Promise<Response> =
   try {
     
     // El usuario decodificado del token está disponible en req['user']
-    const cedula = req['user']['cedula'];
+    const correo = req['user']['correo'];
 
     // Buscar al usuario en la base de datos usando el campo único, como cédula en este caso
-    const user = await User.findOne({ where: { cedula } });
+    const user = await User.findOne({ where: { correo } });
 
     if (!user) {
       return res.status(404).json({ message: 'Usuario no encontrado' });

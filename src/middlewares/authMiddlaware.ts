@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import User from '../models/userModel'
 import Empleado from '../models/empleadoModel';
+import UserAttributes from '../models/userModel'
 
 const JWT_SECRET = "clavemamalona";
 
@@ -25,6 +26,8 @@ export const authenticate = (req: CustomRequest, res: Response, next: NextFuncti
         }
 
         req.user = user;
+        console.log(user);
+        
         next();
     });
 };
