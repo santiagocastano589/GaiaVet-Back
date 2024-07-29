@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../db/connection';
+import bcrypt from 'bcrypt';
 
 interface AdminAttributtes {
   nit: number;
@@ -58,6 +59,12 @@ class Admin extends Model<AdminAttributtes> implements AdminAttributtes {
         tableName: 'veterinaria', 
         timestamps: false, 
         underscored: true, 
+        hooks: {
+          beforeCreate: async (user: Admin) => {
+            const salt = await bcrypt.genSalt(10);
+            user.contraseña = await bcrypt.hash(user.contraseña, salt);
+          },
+        },
       }
     );
   }
