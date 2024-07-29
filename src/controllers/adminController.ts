@@ -8,7 +8,7 @@ const validateEmail = (email: string): boolean => {
 
 export const registerEmpleado = async (req: Request, res: Response): Promise<Response> => {
     try {
-      const { cedula, cedulaEmpleado, nombre, apellido,edad,tiempoExp, correo, contraseña,role } = req.body;
+      const {cedulaEmpleado, nombre, apellido,edad,tiempoExp, correo, contraseña,role } = req.body;
   
       if (!validateEmail(correo)) {
         return res.status(400).json({ message: 'Correo electrónico inválido' });

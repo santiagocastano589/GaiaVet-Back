@@ -9,11 +9,12 @@ import sequelize from './db/connection';
 import cors, { CorsOptions } from 'cors';
 import Empleado from './models/empleadoModel';
 import adminRoutes from './routes/adminRoutes'
+import Admin from './models/adminModel';
 
 
 User.initModel();
 Empleado.initModel();
-
+Admin.initModel();
 
 dotenv.config();
 
