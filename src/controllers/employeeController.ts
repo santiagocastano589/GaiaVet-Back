@@ -13,7 +13,7 @@ export const createEmployee = async (req: Request, res: Response) => {
 
 }
 
-export const updateEmpleado = async (req: Request, res: Response) => {
+export const updateEmployeed = async (req: Request, res: Response) => {
     try {
       const { cedulaEmpleado } = req.params;
       const employee = await Empleado.findByPk(cedulaEmpleado);

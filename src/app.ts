@@ -9,7 +9,7 @@ import sequelize from './db/connection';
 import cors, { CorsOptions } from 'cors';
 import Empleado from './models/empleadoModel';
 import adminRoutes from './routes/adminRoutes'
-
+import employeeRoutes from "./routes/employeeRoutes";
 
 User.initModel();
 Empleado.initModel();
@@ -34,6 +34,7 @@ app.use(cors());
 app.use('/', userRoutes);
 app.use('/auth', authRoutes);
 app.use('/',adminRoutes)
+app.use('/',employeeRoutes)
 
 app.listen(port, () => {
   async function testConnection() {
