@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import User from '../models/userModel';
 import Empleado from '../models/empleadoModel';
 const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
