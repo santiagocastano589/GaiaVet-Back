@@ -6,9 +6,15 @@ import User from './models/userModel';
 import { authenticate } from './middlewares/authMiddlaware';
 import sequelize from './db/connection';
 import cors, { CorsOptions } from 'cors';
+import Empleado from './models/empleadoModel';
+import adminRoutes from './routes/adminRoutes'
+import Admin from './models/adminModel';
+import authRoutes from './routes/authRoutes'
+
 
 User.initModel();
-
+Empleado.initModel();
+Admin.initModel();
 
 dotenv.config();
 
@@ -27,9 +33,8 @@ app.use(cors());
 
 
 app.use('/', userRoutes);
-app.get('/', (req, res) => {
-  res.send('GaiaVet')
-});
+app.use('/auth', authRoutes);
+app.use('/',adminRoutes)
 
 app.listen(port, () => {
   async function testConnection() {
