@@ -56,7 +56,7 @@ class Mascota extends Model<MascotaAttributes> implements MascotaAttributes {
         },
         fk_cedulaU: {
           type: DataTypes.STRING(15),
-          allowNull: false,
+          allowNull: true,
           references: {
             model: 'usuario', 
             key: 'cedula',

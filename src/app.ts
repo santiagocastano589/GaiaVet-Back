@@ -3,18 +3,20 @@ import bodyParser from 'body-parser';
 import userRoutes from './routes/userRoutes';
 import dotenv from 'dotenv';
 import User from './models/userModel';
-import { authenticate } from './middlewares/authMiddlaware';
 import sequelize from './db/connection';
 import cors, { CorsOptions } from 'cors';
 import Empleado from './models/empleadoModel';
 import adminRoutes from './routes/adminRoutes'
 import Admin from './models/adminModel';
 import authRoutes from './routes/authRoutes'
+import petRoutes from './routes/petRoutes'
+import Mascota from './models/petModel';
 
 
 User.initModel();
 Empleado.initModel();
 Admin.initModel();
+Mascota.initModel();
 
 dotenv.config();
 
@@ -35,6 +37,7 @@ app.use(cors());
 app.use('/', userRoutes);
 app.use('/auth', authRoutes);
 app.use('/',adminRoutes)
+app.use('/',petRoutes)
 
 app.listen(port, () => {
   async function testConnection() {
