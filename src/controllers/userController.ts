@@ -3,6 +3,7 @@ import User from '../models/userModel';
 import {CustomRequest} from '../middlewares/authMiddlaware'
 import bcrypt from 'bcrypt';
 import { where } from 'sequelize';
+import Admin from '../models/adminModel';
 
 
 const JWT_SECRET = "clavemamalona";
@@ -25,8 +26,8 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
 
   export const createUser = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { cedula, nombre, apellido, correo, contraseña, direccion, telefono, estado } = req.body;
-      const newUser = await User.create({ cedula, nombre, apellido, correo, contraseña, direccion, telefono,estado  });
+      const { cedula, nombre, apellido, correo, contraseña, direccion, telefono, estado, role } = req.body;
+      const newUser = await User.create({ cedula, nombre, apellido, correo, contraseña, direccion, telefono,estado ,role });
       res.status(201).json(newUser);
     } catch (error) {
       console.error(error); 
@@ -54,10 +55,13 @@ export const me = async (req: CustomRequest, res: Response): Promise<Response> =
   try {
     
     // El usuario decodificado del token está disponible en req['user']
-    const cedula = req['user']['cedula'];
+    const correo = req['user']['correo'];
 
+    let user = await User.findOne({ where: { correo } });
+
+
+   
     // Buscar al usuario en la base de datos usando el campo único, como cédula en este caso
-    const user = await User.findOne({ where: { cedula } });
 
     if (!user) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
@@ -72,10 +76,10 @@ export const me = async (req: CustomRequest, res: Response): Promise<Response> =
 
 export const updateUser = async (req: CustomRequest, res: Response): Promise<Response> => {
   try {
-    const { cedula } = req.user; // Obtener la cédula del usuario autenticado desde el token
-    const { nombre, apellido, correo, contraseña, direccion, telefono, estado } = req.body;
+    const { correo } = req.user; // Obtener la cédula del usuario autenticado desde el token
+    const { nombre, apellido, contraseña, direccion, telefono, estado } = req.body;
 
-    const user = await User.findOne({ where: { cedula } });
+    const user = await User.findOne({ where: { correo } });
 
     if (!user) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
