@@ -14,8 +14,9 @@ const validateEmail = (email: string): boolean => {
 export const me = async (req: CustomRequest, res: Response): Promise<Response> => {
   try {
     const correo = req['user']['correo'];
+    
     let user = await User.findOne({ where: { correo } });
-  
+    
     if (!user) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }

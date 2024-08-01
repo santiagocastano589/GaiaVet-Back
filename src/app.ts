@@ -27,11 +27,6 @@ const port: string | number = process.env.PORT || 3000;
 app.use(bodyParser.json());
 app.use(cors());
 
-/*const corsOptions: CorsOptions = {
-  origin: 'https://example.com',  // Permitir solo este origen
-  methods: ['GET', 'POST'],       // Permitir solo estos métodos HTTP
-  allowedHeaders: ['Authorization'] // Permitir solo estos encabezados
-};*/
 
 
 app.use('/', userRoutes);

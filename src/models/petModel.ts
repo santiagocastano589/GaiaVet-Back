@@ -2,7 +2,7 @@ import { DataTypes, Model } from 'sequelize';
 import sequelize from '../db/connection';
 
 interface MascotaAttributes {
-  idMascota: number;
+  idMascota?: number;
   nombre: string;
   edad: number;
   raza: string;
@@ -10,6 +10,7 @@ interface MascotaAttributes {
   temperamento: string;
   foto: Blob; 
   fk_cedulaU: string;
+  Estado:boolean;
 }
 
 class Mascota extends Model<MascotaAttributes> implements MascotaAttributes {
@@ -21,6 +22,9 @@ class Mascota extends Model<MascotaAttributes> implements MascotaAttributes {
   public temperamento!: string;
   public foto!: Blob;
   public fk_cedulaU!: string;
+  public Estado!: boolean;
+
+  
 
   static initModel(): void {
     this.init(
@@ -46,6 +50,12 @@ class Mascota extends Model<MascotaAttributes> implements MascotaAttributes {
           type: DataTypes.DOUBLE(5, 2),
           allowNull: false,
         },
+        Estado:{
+          type:DataTypes.BOOLEAN,
+          allowNull:true,
+          defaultValue:true,
+
+        },
         temperamento: {
           type: DataTypes.STRING(30),
           allowNull: false,
@@ -56,7 +66,7 @@ class Mascota extends Model<MascotaAttributes> implements MascotaAttributes {
         },
         fk_cedulaU: {
           type: DataTypes.STRING(15),
-          allowNull: true,
+          allowNull: false,
           references: {
             model: 'usuario', 
             key: 'cedula',
@@ -67,7 +77,6 @@ class Mascota extends Model<MascotaAttributes> implements MascotaAttributes {
         sequelize,
         tableName: 'mascota', 
         timestamps: false,
-        underscored: true, 
       }
     );
   }
