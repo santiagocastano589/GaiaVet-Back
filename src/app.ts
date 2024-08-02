@@ -11,16 +11,18 @@ import Empleado from './models/empleadoModel';
 import adminRoutes from './routes/adminRoutes'
 import employeeRoutes from "./routes/employeeRoutes";
 import appointmentRoutes from "./routes/appointmentRoutes"
+import Cita from './models/citaModel';
 
 User.initModel();
 Empleado.initModel();
+Cita.initModel()
 
 
 dotenv.config();
 
 
 const app: Application = express();
-const port: string | number = process.env.PORT || 3000;
+const port: string | number = process.env.PORT || 3500;
 
 app.use(bodyParser.json());
 app.use(cors());
