@@ -10,6 +10,7 @@ import cors, { CorsOptions } from 'cors';
 import Empleado from './models/empleadoModel';
 import adminRoutes from './routes/adminRoutes'
 import employeeRoutes from "./routes/employeeRoutes";
+import appointmentRoutes from "./routes/appointmentRoutes"
 
 User.initModel();
 Empleado.initModel();
@@ -35,6 +36,7 @@ app.use('/', userRoutes);
 app.use('/auth', authRoutes);
 app.use('/',adminRoutes)
 app.use('/',employeeRoutes)
+app.use('/',appointmentRoutes)
 
 app.listen(port, () => {
   async function testConnection() {

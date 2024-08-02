@@ -7,7 +7,9 @@ interface CitaAttributes {
   fechaHoraCita: Date;
   tipoMascota: string;
   estadoCita: string;
-  fk_idServicioC: number;
+  fk_cc_usuario: number;  
+  fk_nit: number;
+  fk_cc_Empleado: number; 
 }
 
 class Cita extends Model<CitaAttributes> implements CitaAttributes {
@@ -16,7 +18,9 @@ class Cita extends Model<CitaAttributes> implements CitaAttributes {
   public fechaHoraCita!: Date;
   public tipoMascota!: string;
   public estadoCita!: string;
-  public fk_idServicioC!: number;
+  public fk_cc_usuario!: number;  
+  public fk_nit!: number;
+  public fk_cc_Empleado!: number; 
 
   static initModel(): void {
     this.init(
@@ -42,12 +46,29 @@ class Cita extends Model<CitaAttributes> implements CitaAttributes {
           type: DataTypes.STRING(20),
           allowNull: false,
         },
-        fk_idServicioC: {
+        fk_cc_usuario: {
+          type: DataTypes.INTEGER.UNSIGNED,  
+          allowNull: false,
+          references: {
+            model: 'usuario', 
+            key: 'cedula',
+          },
+        },
+
+        fk_nit: {
           type: DataTypes.INTEGER.UNSIGNED,
           allowNull: false,
           references: {
-            model: 'servicio', // Nombre de la tabla de referencia
-            key: 'idServicio',
+            model: 'veterinaria', // Nombre de la tabla de referencia
+            key: 'nit',
+          },
+        },
+        fk_cc_Empleado: {
+          type: DataTypes.INTEGER.UNSIGNED,  
+          allowNull: false,
+          references: {
+            model: 'empleado', 
+            key: 'cedulaEmpleado',
           },
         },
       },
