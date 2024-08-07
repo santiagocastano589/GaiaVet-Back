@@ -3,22 +3,23 @@ import sequelize from '../db/connection';
 
 interface ProductoAttributes {
   idProducto: number;
+  imagen?:string;
   nombreProducto: string;
   categoria: string;
-  descripcion: string;
+  descripcion:string;
   stock: number;
   precio: number;
-  fk_idServicioP: number;
 }
 
 class Producto extends Model<ProductoAttributes> implements ProductoAttributes {
   public idProducto!: number;
+  public imagen!:string;
   public nombreProducto!: string;
   public categoria!: string;
   public descripcion!: string;
   public stock!: number;
   public precio!: number;
-  public fk_idServicioP!: number;
+ 
 
   static initModel(): void {
     this.init(
@@ -27,35 +28,38 @@ class Producto extends Model<ProductoAttributes> implements ProductoAttributes {
           type: DataTypes.INTEGER.UNSIGNED,
           autoIncrement: true,
           primaryKey: true,
+          field:'idProducto'
+        },
+        imagen:{
+          type:DataTypes.STRING(30),
+          allowNull:true,
+          field:'imagen'
         },
         nombreProducto: {
           type: DataTypes.STRING(50),
           allowNull: false,
+          field:'nombreProducto'
         },
         categoria: {
           type: DataTypes.STRING(30),
           allowNull: false,
+          field:'categoria'
         },
-        descripcion: {
-          type: DataTypes.STRING(100),
-          allowNull: false,
+        descripcion:{
+          type:DataTypes.STRING(50),
+          allowNull:false,
+          field:'descripcion'
         },
         stock: {
           type: DataTypes.INTEGER,
           allowNull: false,
+          field:'stock'
         },
         precio: {
           type: DataTypes.DECIMAL(10, 2),
           allowNull: false,
-        },
-        fk_idServicioP: {
-          type: DataTypes.INTEGER.UNSIGNED,
-          allowNull: false,
-          references: {
-            model: 'servicio', // Nombre de la tabla de referencia
-            key: 'idServicio',
-          },
-        },
+          field:'precio'
+        }
       },
       {
         sequelize,

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import Cita from '../models/citaModel';
 
-// Crear una nueva cita
+
 export const createAppointment = async (req: Request, res: Response) => {
     const { tipoCita, fechaHoraCita, tipoMascota, estadoCita, fk_cc_usuario, fk_nit, fk_cc_Empleado } = req.body;
 
@@ -14,7 +14,7 @@ export const createAppointment = async (req: Request, res: Response) => {
     }
 };
 
-// Obtener todas las citas
+
 export const getAllApointments = async (req: Request, res: Response) => {
     try {
         const citas = await Cita.findAll();
@@ -25,7 +25,7 @@ export const getAllApointments = async (req: Request, res: Response) => {
     }
 };
 
-// Obtener una cita por ID
+
 export const getAppoinmentById = async (req: Request, res: Response) => {
     const { idCita } = req.params;
 
@@ -41,7 +41,7 @@ export const getAppoinmentById = async (req: Request, res: Response) => {
     }
 };
 
-// Actualizar una cita
+
 export const updateAppointment = async (req: Request, res: Response) => {
     const { idCita } = req.params;
     const { tipoCita, fechaHoraCita, tipoMascota, estadoCita, fk_cc_usuario, fk_nit, fk_cc_Empleado } = req.body;
@@ -60,7 +60,7 @@ export const updateAppointment = async (req: Request, res: Response) => {
     }
 };
 
-// Eliminar una cita
+
 export const deleteAppoinment = async (req: Request, res: Response) => {
     const { idCita } = req.params;
 

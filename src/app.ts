@@ -12,10 +12,15 @@ import adminRoutes from './routes/adminRoutes'
 import employeeRoutes from "./routes/employeeRoutes";
 import appointmentRoutes from "./routes/appointmentRoutes"
 import Cita from './models/citaModel';
+import Producto from './models/productoModel';
+import productRoutes from "./routes/productRoutes";
+
 
 User.initModel();
 Empleado.initModel();
-Cita.initModel()
+Cita.initModel();
+Producto.initModel()
+
 
 
 dotenv.config();
@@ -39,6 +44,7 @@ app.use('/auth', authRoutes);
 app.use('/',adminRoutes)
 app.use('/',employeeRoutes)
 app.use('/',appointmentRoutes)
+app.use('/',productRoutes)
 
 app.listen(port, () => {
   async function testConnection() {

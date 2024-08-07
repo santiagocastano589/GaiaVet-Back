@@ -10,6 +10,7 @@ const JWT_SECRET = "clavemamalona";
 export interface CustomRequest extends Request {
     user?: any;
     
+    
 }
 
 export const authenticate = (req: CustomRequest, res: Response, next: NextFunction) => {
@@ -26,6 +27,7 @@ export const authenticate = (req: CustomRequest, res: Response, next: NextFuncti
         }
 
         req.user = user;
+        
         
         next();
     });
