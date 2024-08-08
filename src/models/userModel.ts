@@ -12,6 +12,8 @@ interface UserAttributes {
   telefono: string;
   estado:boolean;
   role:string;
+  imagen: string;
+
 }
 
 class User extends Model<UserAttributes> implements UserAttributes {
@@ -24,6 +26,8 @@ class User extends Model<UserAttributes> implements UserAttributes {
   public telefono!: string;
   public estado!:boolean;
   public role!: string;
+  public imagen!: string;
+
 
 
 
@@ -59,6 +63,7 @@ class User extends Model<UserAttributes> implements UserAttributes {
           type: DataTypes.STRING(12),
           allowNull: true,
         },
+
           estado:{
             type:DataTypes.BOOLEAN,
             defaultValue:true,
@@ -67,6 +72,9 @@ class User extends Model<UserAttributes> implements UserAttributes {
           role:{
             type:DataTypes.STRING,
             defaultValue:'User',
+            allowNull:true
+          },imagen:{
+            type:DataTypes.STRING,
             allowNull:true
           }
 
