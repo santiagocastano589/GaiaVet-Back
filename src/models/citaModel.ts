@@ -1,4 +1,4 @@
-import { DataTypes, Model } from 'sequelize';
+import { DataTypes, Model, STRING } from 'sequelize';
 import sequelize from '../db/connection';
 
 interface CitaAttributes {
@@ -6,8 +6,10 @@ interface CitaAttributes {
   tipoCita: string;
   fechaHoraCita: Date;
   tipoMascota: string;
-  estadoCita: string;
-  fk_idServicioC: number;
+  estadoCita?: string;
+  fk_cc_usuario?: string;
+  fk_nit?: number;
+  fk_cc_Empleado?: string;
 }
 
 class Cita extends Model<CitaAttributes> implements CitaAttributes {
@@ -16,7 +18,9 @@ class Cita extends Model<CitaAttributes> implements CitaAttributes {
   public fechaHoraCita!: Date;
   public tipoMascota!: string;
   public estadoCita!: string;
-  public fk_idServicioC!: number;
+  public fk_cc_usuario!: string;
+  public fk_nit!: number;
+  public fk_cc_Empleado!: string;
 
   static initModel(): void {
     this.init(
@@ -41,21 +45,42 @@ class Cita extends Model<CitaAttributes> implements CitaAttributes {
         estadoCita: {
           type: DataTypes.STRING(20),
           allowNull: false,
+          values:['Pendiente','Cancelada','Confirmada','Terminada'],
+          defaultValue:"Pendiente"
         },
-        fk_idServicioC: {
-          type: DataTypes.INTEGER.UNSIGNED,
+        fk_cc_usuario:{
+          type: DataTypes.STRING(15),
           allowNull: false,
-          references: {
-            model: 'servicio', // Nombre de la tabla de referencia
-            key: 'idServicio',
+          references:{
+            model:'usuario',
+            key:'cedula'
           },
         },
+        fk_nit:{
+          type:DataTypes.INTEGER.UNSIGNED,
+          allowNull:false,
+          references:{
+            model:'veterinaria',
+            key:'nit'
+          },
+
+        },
+        fk_cc_Empleado:{
+          type:DataTypes.STRING(12),
+          allowNull:false,
+          references:{
+            model:'empleado',
+            key:'cedulaEmpleado'
+          },
+        }
+
+      
       },
       {
         sequelize,
-        tableName: 'cita', // Nombre de la tabla en MySQL
-        timestamps: false, // Deshabilitar campos createdAt y updatedAt
-        underscored: true, // Utilizar nombres de columna en snake_case
+        tableName: 'cita', 
+        timestamps: false, 
+        underscored: true, 
       }
     );
   }

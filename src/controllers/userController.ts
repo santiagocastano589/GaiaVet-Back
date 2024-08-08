@@ -22,7 +22,7 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
 
   export const createUser = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { cedula, nombre, apellido, correo, contraseña, direccion, telefono, estado, role } = req.body;
+      const { cedula, nombre, apellido, correo, contraseña, direccion, telefono, estado, role ,imagen} = req.body;
       const exist = await User.findOne({
         where: {
           [Op.or]: [
@@ -32,7 +32,7 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
         }
       });   
       if (!exist) {
-        const newUser = await User.create({ cedula, nombre, apellido, correo, contraseña, direccion, telefono,estado ,role });
+        const newUser = await User.create({ cedula, nombre, apellido, correo, contraseña, direccion, telefono,estado ,role ,imagen});
         res.status(201).json(newUser);
       }else{
         res.status(400).json({ message: "Estos datos ya estan asociados a otra cuenta" });
@@ -74,7 +74,7 @@ export const me = async (req: CustomRequest, res: Response): Promise<Response> =
 export const updateUser = async (req: CustomRequest, res: Response): Promise<Response> => {
   try {
     const { correo } = req.user; 
-    const { nombre, apellido, contraseña, direccion, telefono, estado } = req.body;
+    const { nombre, apellido, contraseña, direccion, telefono, estado, imagen } = req.body;
 
     const user = await User.findOne({ where: { correo } });
 
@@ -90,12 +90,16 @@ export const updateUser = async (req: CustomRequest, res: Response): Promise<Res
     if (apellido) user.apellido = apellido;
     if (correo) user.correo = correo;
     if (contraseña) {
+      if (contraseña.length < 6) { 
+        return res.status(400).json({ message: 'La contraseña debe tener al menos 6 caracteres' });
+      }
       const salt = await bcrypt.genSalt(10);
       user.contraseña = await bcrypt.hash(contraseña, salt);
     }
     if (direccion) user.direccion = direccion;
     if (telefono) user.telefono = telefono;
     if (typeof estado === 'boolean') user.estado = estado;
+    if (imagen) user.imagen = imagen; 
 
     await user.save();
 
@@ -105,6 +109,7 @@ export const updateUser = async (req: CustomRequest, res: Response): Promise<Res
     return res.status(500).json({ message: 'Error al actualizar usuario' });
   }
 };
+
 export const deleteAcount = async (req: CustomRequest, res: Response): Promise<void> => {
   const cedula = req['user']['cedula'];
 
