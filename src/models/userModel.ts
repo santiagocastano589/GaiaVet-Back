@@ -10,11 +10,11 @@ interface UserAttributes {
   contraseña: string;
   direccion: string;
   telefono: string;
-  estado:boolean;
-  role:string;
+  estado: boolean;
+  role: string;
   imagen: string;
-
 }
+
 
 class User extends Model<UserAttributes> implements UserAttributes {
   public cedula!: number;
@@ -24,7 +24,7 @@ class User extends Model<UserAttributes> implements UserAttributes {
   public contraseña!: string;
   public direccion!: string;
   public telefono!: string;
-  public estado!:boolean;
+  public estado!: boolean;
   public role!: string;
   public imagen!: string;
 
@@ -52,7 +52,7 @@ class User extends Model<UserAttributes> implements UserAttributes {
           unique: true,
         },
         contraseña: {
-          type: DataTypes.STRING(60), // Asegúrate de que sea lo suficientemente largo para el hash bcrypt
+          type: DataTypes.STRING(60),
           allowNull: false,
         },
         direccion: {
@@ -63,21 +63,20 @@ class User extends Model<UserAttributes> implements UserAttributes {
           type: DataTypes.STRING(12),
           allowNull: true,
         },
-
-          estado:{
-            type:DataTypes.BOOLEAN,
-            defaultValue:true,
-            allowNull:true
-          },
-          role:{
-            type:DataTypes.STRING,
-            defaultValue:'User',
-            allowNull:true
-          },imagen:{
-            type:DataTypes.STRING,
-            allowNull:true
-          }
-
+        estado: {
+          type: DataTypes.BOOLEAN,
+          defaultValue: true,
+          allowNull: true,
+        },
+        role: {
+          type: DataTypes.STRING,
+          defaultValue: 'User',
+          allowNull: true,
+        },
+        imagen: {
+          type: DataTypes.STRING,
+          allowNull: true,
+        },
       },
       {
         sequelize,

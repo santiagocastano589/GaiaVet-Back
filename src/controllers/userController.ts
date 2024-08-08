@@ -22,23 +22,17 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
 
   export const createUser = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { cedula, nombre, apellido, correo, contraseña, direccion, telefono, estado, role ,imagen} = req.body;
-      const exist = await User.findOne({
-        where: {
-          [Op.or]: [
-            { correo },
-            { cedula }
-          ]
-        }
-      });   
+      const { cedula, nombre, apellido, correo, contraseña, direccion, telefono, estado, role, imagen } = req.body;
+      const exist = await User.findOne({ where: { [Op.or]: [ { correo }, { cedula } ] } });
+      
       if (!exist) {
-        const newUser = await User.create({ cedula, nombre, apellido, correo, contraseña, direccion, telefono,estado ,role ,imagen});
+        const newUser = await User.create({ cedula, nombre, apellido, correo, contraseña, direccion, telefono, estado, role, imagen });
         res.status(201).json(newUser);
-      }else{
-        res.status(400).json({ message: "Estos datos ya estan asociados a otra cuenta" });
+      } else {
+        res.status(400).json({ message: "Estos datos ya están asociados a otra cuenta" });
       }
     } catch (error) {
-      console.error(error); 
+      console.error(error);
       res.status(400).json({ message: "Error al crear el Usuario" });
     }
   };
