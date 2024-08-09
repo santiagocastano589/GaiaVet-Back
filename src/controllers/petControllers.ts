@@ -34,23 +34,28 @@ export const getAllPet = async (req: Request, res: Response): Promise<void> => {
     }
   };
 
-  export const findPetsUser = async (req: Request, res: Response): Promise<void> => {
+  export const findPetsUser = async (req: CustomRequest, res: Response): Promise<void> => {
     try {
-      const fk_cedulaU = req.body;
-<<<<<<< HEAD
-      const pets = await Mascota.findAll({where:fk_cedulaU});
-      if (pets) {
-        res.status(200).json(pets); 
-=======
-      const pet = await Mascota.findAll({where:fk_cedulaU});
-      if (pet) {
-        res.status(200).json(pet); 
->>>>>>> 52884eec3484eab4757193c3d01e4c4a38720761
+      const correo = req['user']['correo'];
+  
+      const user = await User.findOne({ where: { correo: correo } });
+  
+      if (!user) {
+        res.status(404).json({ message: 'Usuario no encontrado' });
+        return;
+      }
+  
+      const fk_cedulaU = user.cedula.toString();
+  
+      const pets = await Mascota.findAll({ where: { fk_cedulaU: fk_cedulaU } });
+  
+      if (pets.length > 0) {
+        res.status(200).json(pets);
       } else {
-        res.status(404).json({ message: 'Mascota no encontrada' }); 
+        res.status(404).json({ message: 'Mascota no encontrada' });
       }
     } catch (error: any) {
-      console.error('Error fetching pet: ', error);
+   console.error('Error fetching pet: ', error);
       res.status(500).json({ message: 'Error al encontrar la mascota.' });
     }
   };

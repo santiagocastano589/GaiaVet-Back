@@ -45,6 +45,7 @@ class Cita extends Model<CitaAttributes> implements CitaAttributes {
         estadoCita: {
           type: DataTypes.STRING(20),
           allowNull: false,
+          values:['Pendiente','Cancelada','Confirmada','Terminada'],
           defaultValue:"Pendiente"
         },
         fk_cc_usuario:{

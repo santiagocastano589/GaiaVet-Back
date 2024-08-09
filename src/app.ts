@@ -13,11 +13,15 @@ import petRoutes from './routes/petRoutes'
 import Mascota from './models/petModel';
 import employeeRoutes from './routes/employeeRoutes'
 
+import productoRoutes from './routes/productoRoutes';
+import Producto from './models/productoModel';
+
 
 User.initModel();
 Empleado.initModel();
 Admin.initModel();
 Mascota.initModel();
+Producto.initModel();
 
 dotenv.config();
 
@@ -35,6 +39,8 @@ app.use('/auth', authRoutes);
 app.use('/',adminRoutes)
 app.use('/',petRoutes)
 app.use('/',employeeRoutes)
+app.use('/', productoRoutes);
+
 
 app.listen(port, () => {
   async function testConnection() {
