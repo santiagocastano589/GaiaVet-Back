@@ -105,7 +105,7 @@ export const updateUser = async (req: CustomRequest, res: Response): Promise<Res
 };
 
 
-export const deleteAccount = async (req: CustomRequest, res: Response): Promise<void> => {
+export const deleteAccount = async (req: CustomRequest, res: Response): Promise<Response<any>> => {
   const correo = req['user']['correo'];
 
   try {
@@ -113,14 +113,14 @@ export const deleteAccount = async (req: CustomRequest, res: Response): Promise<
 
     if (user) {
       await User.update({ estado: false }, { where: { cedula: user.cedula } });
-      res.status(200).json({ message: 'Usuario Eliminado' });
-
+      return res.status(200).json({ message: 'Usuario Eliminado' }); 
     }
 
-    res.status(404).json({ message: 'Usuario no encontrado' });
+    // Si no se encuentra el usuario, envía la respuesta 404
+    return res.status(404).json({ message: 'Usuario no encontrado' });
 
   } catch (error) {
     console.error('Error al eliminar usuario:', error);
-    res.status(500).json({ error: 'Error al eliminar usuario' });
+    return res.status(500).json({ error: 'Error al eliminar usuario' }); 
   }
 };
