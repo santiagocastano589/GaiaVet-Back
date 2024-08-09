@@ -37,9 +37,9 @@ export const getAllPet = async (req: Request, res: Response): Promise<void> => {
   export const findPetsUser = async (req: Request, res: Response): Promise<void> => {
     try {
       const fk_cedulaU = req.body;
-      const pet = await Mascota.findOne({where:fk_cedulaU});
-      if (pet) {
-        res.status(200).json(pet); 
+      const pets = await Mascota.findAll({where:fk_cedulaU});
+      if (pets) {
+        res.status(200).json(pets); 
       } else {
         res.status(404).json({ message: 'Mascota no encontrada' }); 
       }

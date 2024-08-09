@@ -7,7 +7,8 @@ const JWT_SECRET = "clavemamalona";
 export interface CustomRequest extends Request {
     user?: any;
     
-}export const accessRole = (roles: string | string[]) => {
+}
+export const accessRole = (roles: string | string[]) => {
   return async (req: CustomRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
       const user = req.user;
