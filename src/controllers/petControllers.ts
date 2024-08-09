@@ -37,9 +37,15 @@ export const getAllPet = async (req: Request, res: Response): Promise<void> => {
   export const findPetsUser = async (req: Request, res: Response): Promise<void> => {
     try {
       const fk_cedulaU = req.body;
+<<<<<<< HEAD
       const pets = await Mascota.findAll({where:fk_cedulaU});
       if (pets) {
         res.status(200).json(pets); 
+=======
+      const pet = await Mascota.findAll({where:fk_cedulaU});
+      if (pet) {
+        res.status(200).json(pet); 
+>>>>>>> 52884eec3484eab4757193c3d01e4c4a38720761
       } else {
         res.status(404).json({ message: 'Mascota no encontrada' }); 
       }
@@ -90,5 +96,21 @@ export const deletePet = async (req: Request, res: Response): Promise<void> => {
   } catch (error: any) {
     console.error('Error deleting user: ', error);
     res.status(500).json({ message: 'Error al eliminar el usuario' });
+  }
+};
+
+export const petsUser = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const cedula = req.body;
+    const fk_cedulaU = cedula
+    const pet = await Mascota.findAll({where:fk_cedulaU});
+    if (pet) {
+      res.status(200).json(pet); 
+    } else {
+      res.status(404).json({ message: 'Mascota no encontrada' }); 
+    }
+  } catch (error: any) {
+    console.error('Error fetching pet: ', error);
+    res.status(500).json({ message: 'Error al encontrar la mascota.' });
   }
 };
