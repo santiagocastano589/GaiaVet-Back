@@ -7,22 +7,19 @@ const JWT_SECRET = "clavemamalona";
 export interface CustomRequest extends Request {
     user?: any;
     
-}export const accessRole = (roles: string | string[]) => {
+}
+export const accessRole = (roles: string | string[]) => {
   return async (req: CustomRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
       const user = req.user;
-
       if (!user) {
         res.status(401).json({ message: 'No autorizado' });
         return; }
-
       const roleArray = Array.isArray(roles) ? roles : [roles];
-
       if (!roleArray.includes(user.role)) {
         res.status(403).json({ message: 'Acceso denegado' });
         return; 
-      }
-
+     }
       next();
     } catch (error) {
       console.error('Error en el middleware de acceso:', error);
@@ -46,4 +43,8 @@ export const authenticate = (req: CustomRequest, res: Response, next: NextFuncti
         
         next();
     });
+};
+export const validateEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
 };

@@ -20,22 +20,9 @@ const validateEmail = (email: string): boolean => {
 };
 
 
-export const registerUser = async (req: Request, res: Response): Promise<Response> => {
-  try {
-    const { cedula, nombre, apellido, correo, contraseña, direccion, telefono,estado,role } = req.body;
 
-    if (!validateEmail(correo)) {
-      return res.status(400).json({ message: 'Correo electrónico inválido' });
-    }
-    const newUser = await User.create({ cedula, nombre, apellido, correo, contraseña, direccion, telefono,estado,role });
-    return res.status(201).json(newUser);
-  } catch (error) {
-    console.error(error);
-    return res.status(400).json({ message: 'Error al registrar el Usuario' });
-  }
-};
 
-type AuthenticatedUser = User | Empleado |Admin | null;
+type AuthenticatedUser = User | Empleado |Admin | null ;
 
 export const loginUser = async (req: Request, res: Response): Promise<Response> => {
   try {
@@ -58,9 +45,13 @@ export const loginUser = async (req: Request, res: Response): Promise<Response> 
       userType = 'administrador';
     }
 
+
+
     if (!user) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
+
+ 
 
     const token = jwt.sign(
       { correo: user.correo, role: user.role, userType },
