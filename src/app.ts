@@ -15,6 +15,9 @@ import employeeRoutes from './routes/employeeRoutes'
 import productoRoutes from './routes/productoRoutes';
 import Producto from './models/productoModel';
 
+import productoRoutes from './routes/productoRoutes';
+import Producto from './models/productoModel';
+
 
 User.initModel();
 Empleado.initModel();
@@ -37,7 +40,13 @@ app.use('/', userRoutes);
 app.use('/auth', authRoutes);
 app.use('/',adminRoutes)
 app.use('/',petRoutes)
+<<<<<<< HEAD
 app.use('/', productoRoutes);
+=======
+app.use('/',employeeRoutes)
+app.use('/', productoRoutes);
+
+>>>>>>> 2f7333f690b6d803736d04deb788d1dc34589c2d
 
 app.listen(port, () => {
   async function testConnection() {
