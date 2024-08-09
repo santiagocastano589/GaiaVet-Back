@@ -59,7 +59,7 @@ export const me = async (req: CustomRequest, res: Response): Promise<Response> =
     let user = await User.findOne({ where: { correo } });
 
     if (!user) {return res.status(404).json({ message: 'Usuario no encontrado' });}
-    return res.status(200).json({ nombre: user.nombre, apellido: user.apellido, correo: user.correo, direccion:user.direccion, telefono:user.telefono, imagen:user.imagen });
+    return res.status(200).json({ nombre: user.nombre, apellido: user.apellido, correo: user.correo, direccion:user.direccion, telefono:user.telefono, imagen: user.imagen });
   } catch (error) {
     console.error('Error al obtener usuario:', error);
     return res.status(500).json({ message: 'Error al obtener usuario' });
