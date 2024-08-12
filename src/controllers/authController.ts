@@ -22,7 +22,7 @@ const validateEmail = (email: string): boolean => {
 
 
 
-type AuthenticatedUser = User | Empleado |Admin | null;
+type AuthenticatedUser = User | Empleado |Admin | null ;
 
 export const loginUser = async (req: Request, res: Response): Promise<Response> => {
   try {
@@ -45,9 +45,13 @@ export const loginUser = async (req: Request, res: Response): Promise<Response> 
       userType = 'administrador';
     }
 
+
+
     if (!user) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
+
+ 
 
     const token = jwt.sign(
       { correo: user.correo, role: user.role, userType },

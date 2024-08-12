@@ -1,12 +1,11 @@
 import { Router } from 'express';
-import {  updateUser, me,deleteAcount,createUser} from '../controllers/userController';
+import {  updateUser, me,deleteAccount,createUser} from '../controllers/userController';
 import { authenticate,CustomRequest } from '../middlewares/authMiddlaware';
 
 const router = Router();
 
 router.put('/user', authenticate, updateUser); 
 router.get('/me',authenticate, me );
-router.delete('/me/deleteAcount',authenticate,deleteAcount)
-router.post('/register', createUser );
+router.put('/me/deleteAccount',authenticate,deleteAccount)
 
 export default router;
