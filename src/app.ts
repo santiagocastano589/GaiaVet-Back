@@ -23,6 +23,11 @@ const port: string | number = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 app.use(cors());
+User.initModel();
+Empleado.initModel();
+Admin.initModel();
+Mascota.initModel();
+Producto.initModel();
 
 app.use('/', userRoutes);
 app.use('/auth', authRoutes);
