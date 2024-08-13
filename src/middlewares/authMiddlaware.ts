@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { where } from 'sequelize';
+import User from '../models/userModel';
 
 const JWT_SECRET = "clavemamalona";
 
@@ -49,3 +51,4 @@ export const validateEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 };
+
