@@ -13,8 +13,8 @@ import petRoutes from './routes/petRoutes';
 import Mascota from './models/petModel';
 import employeeRoutes from './routes/employeeRoutes';
 import productoRoutes from './routes/productoRoutes';
+import { MercadoPagoConfig, Preference } from 'mercadopago';
 import Producto from './models/productoModel';
-import { payment } from '../src/config/mercadoPagoConfig';  // Importa la configuración de Mercado Pago
 
 dotenv.config();
 
@@ -37,29 +37,44 @@ app.use('/', employeeRoutes);
 app.use('/', productoRoutes);
 
 
-app.post('/api/create_payment', async (req: Request, res: Response) => {
+const client = new MercadoPagoConfig({ accessToken: 'APP_USR-8827196264162858-081217-755e5d2b5e722ca8f3c7042df40dbed3-1941685779' });
+
+
+app.post("/create_preference", async (req,res) => {
+
   try {
     const body = {
-      transaction_amount: req.body.transaction_amount,
-      description: req.body.description,
-      payment_method_id: req.body.payment_method_id,
-      payer: {
-        email: req.body.payer_email
+      items:[
+        {
+          id: req.body.idProduct,
+          title: req.body.title,
+          quantity: Number(req.body.quantity),
+          unit_price: Number(req.body.price),
+          currency_id: "COP"
+        },
+      ],
+      back_urls:{
+        success: "https://www.youtube.com/watch?v=-e_3Cg9GZFU",
+        failure: "https://www.youtube.com/watch?v=-e_3Cg9GZFU",
+        pending: "https://www.youtube.com/watch?v=-e_3Cg9GZFU"
       },
-    };
+      auto_return: "approved"
+    }
 
-    // Opcional: Configura opciones de solicitud
-    const requestOptions = {
-      idempotencyKey: req.body.idempotency_key || undefined,
-    };
+    const preference = new Preference(client);
+    const result = await preference.create({ body });
 
-    // Crea el pago
-    const response = await payment.create({ body, requestOptions });
-    res.json(response);
+    res.json({
+      id: result.id,
+    })
   } catch (error) {
-    res.status(500).json({ error });
+    console.log(error);
+    res.status(500).json({
+      error: "Error al crear la preferencia"
+    })
+    
   }
-});
+})
 
 app.listen(port, () => {
   async function testConnection() {
