@@ -7,7 +7,7 @@ interface MascotaAttributes {
   edad: number;
   raza: string;
   peso: number;
-  tipo:string;
+  TipoMascota:string;
   temperamento: string;
   foto: Blob; 
   fk_cedulaU: string;
@@ -24,7 +24,7 @@ class Mascota extends Model<MascotaAttributes> implements MascotaAttributes {
   public foto!: Blob;
   public fk_cedulaU!: string;
   public Estado!: boolean;
-  public tipo!: string;
+  public TipoMascota!: string;
 
   
 
@@ -58,7 +58,7 @@ class Mascota extends Model<MascotaAttributes> implements MascotaAttributes {
           defaultValue:true,
 
         },
-        tipo:{
+        TipoMascota:{
           type:DataTypes.STRING,
           allowNull:false
         },
