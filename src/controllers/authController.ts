@@ -30,11 +30,11 @@ export const loginUser = async (req: Request, res: Response): Promise<Response> 
     if (!validateEmail(correo)) {
       return res.status(400).json({ message: 'Correo electrónico inválido' });
     }
-    const isActive = await validateStatus(correo);
+    // const isActive = await validateStatus(correo);
 
-    if (!isActive) {
-      return res.status(401).json({ message: 'Cuenta desactivada' });
-    }
+    // if (!isActive) {
+    //   return res.status(401).json({ message: 'Cuenta desactivada' });
+    // }
     let user: AuthenticatedUser = await authenticateUser(correo, contraseña);
     let userType = 'user';
     if (!user) {
@@ -62,16 +62,16 @@ export const loginUser = async (req: Request, res: Response): Promise<Response> 
     return res.status(500).json({ message: 'Error al iniciar sesión' });
   }
 };
-export const validateStatus = async (correo: string): Promise<boolean> => {
-  try {
-    const user = await User.findOne({ where: { correo } });
+// export const validateStatus = async (correo: string): Promise<boolean> => {
+//   try {
+//     const user = await User.findOne({ where: { correo } });
 
-    if (user) {
-      return user.estado !== false; // Retorna `true` si `estado` no es `false`, de lo contrario `false`
-    }
-    return false;
-  } catch (error) {
-    console.error('Error al verificar el estado del usuario:', error);
-    throw new Error('Error al verificar el estado del usuario');
-  }
-};
+//     if (user) {
+//       return user.estado !== false; // Retorna `true` si `estado` no es `false`, de lo contrario `false`
+//     }
+//     return false;
+//   } catch (error) {
+//     console.error('Error al verificar el estado del usuario:', error);
+//     throw new Error('Error al verificar el estado del usuario');
+//   }
+// };

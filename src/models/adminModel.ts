@@ -9,6 +9,7 @@ interface AdminAttributtes {
   direccion: string;
   telefono: string;
   role:string;
+  estado:boolean;
 }
 
 class Admin extends Model<AdminAttributtes> implements AdminAttributtes {
@@ -19,6 +20,8 @@ class Admin extends Model<AdminAttributtes> implements AdminAttributtes {
   public direccion!: string;
   public telefono!: string;
   public role!: string;
+  public estado!: boolean;
+
 
 
   static initModel(): void {
@@ -48,10 +51,15 @@ class Admin extends Model<AdminAttributtes> implements AdminAttributtes {
           type: DataTypes.STRING(12),
           allowNull: true,
         },
+        estado:{
+          type:DataTypes.BOOLEAN,
+          defaultValue:true
+        },
         role:{
           type:DataTypes.STRING(20),
           defaultValue:'administrador'
         }
+       
       },
       {
         sequelize,
