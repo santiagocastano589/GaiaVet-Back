@@ -1,11 +1,12 @@
 import { Router } from 'express';
-import {  updateUser, me,deleteAccount,createUser} from '../controllers/userController';
-import { authenticate,CustomRequest } from '../middlewares/authMiddlaware';
+import { createProducto, getProducts, updateProducto, deleteProducto } from '../controllers/productoController';
+import { authenticate, accessRole } from '../middlewares/authMiddlaware';
 
 const router = Router();
 
-router.put('/user', authenticate, updateUser); 
-router.get('/me',authenticate, me );
-router.put('/me/deleteAccount',authenticate,deleteAccount)
+router.post('/producto', authenticate, accessRole('administrador'), createProducto);
+router.get('/products', getProducts);
+router.put('/producto/:idProducto', authenticate, accessRole('administrador'), updateProducto);
+router.delete('/producto/:idProducto', authenticate, accessRole('administrador'), deleteProducto);
 
 export default router;
