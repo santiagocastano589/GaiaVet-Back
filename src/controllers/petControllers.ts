@@ -24,9 +24,9 @@ export const getAllPet = async (req: Request, res: Response): Promise<void> => {
     }   
     const cedula = user.cedula;
     try {
-      const { nombre, edad, raza, peso, temperamento, foto,Estado,TipoMascota } = req.body;
+      const { nombre, edad, raza, peso, temperamento, foto,Estado } = req.body;
       const fk_cedulaU = cedula+"";
-      const newPet = await Mascota.create({ nombre, edad, raza, peso, temperamento, foto, fk_cedulaU,Estado, TipoMascota}); 
+      const newPet = await Mascota.create({ nombre, edad, raza, peso, temperamento, foto, fk_cedulaU,Estado}); 
       res.status(201).json(newPet);
     } catch (error) {
       console.error(error);
