@@ -24,9 +24,9 @@ export const getAllPet = async (req: Request, res: Response): Promise<void> => {
     }   
     const cedula = user.cedula;
     try {
-      const { nombre, edad, raza, peso, temperamento, foto,Estado } = req.body;
+      const { nombre, edad, raza, TipoMascota, peso, temperamento, foto,Estado } = req.body;
       const fk_cedulaU = cedula+"";
-      const newPet = await Mascota.create({ nombre, edad, raza, peso, temperamento, foto, fk_cedulaU,Estado}); 
+      const newPet = await Mascota.create({ nombre, edad, raza, TipoMascota, peso, temperamento, foto, fk_cedulaU,Estado}); 
       res.status(201).json(newPet);
     } catch (error) {
       console.error(error);
@@ -62,7 +62,7 @@ export const getAllPet = async (req: Request, res: Response): Promise<void> => {
 
   export const updatePet = async (req: Request, res: Response): Promise<void> => {
     const { idMascota } = req.params;
-    const { nombre, edad, raza, peso, temperamento,foto  } = req.body;
+    const { nombre, edad, raza, TipoMascota, peso, temperamento,foto  } = req.body;
   
     try {
       const pet = await Mascota.findByPk(idMascota);
@@ -72,9 +72,10 @@ export const getAllPet = async (req: Request, res: Response): Promise<void> => {
             nombre,
              edad,
               raza,
-               peso,
-                temperamento,
-                foto
+               TipoMascota,
+                peso,
+                 temperamento,
+                  foto
         });
         const updatedPet= await Mascota.findByPk(idMascota);
         res.status(200).json(updatePet);
