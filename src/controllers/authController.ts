@@ -8,6 +8,7 @@ import { authenticateEmpleado } from '../services/empleadoService';
 import { authenticateUser } from '../services/userService';
 import Empleado from '../models/empleadoModel';
 import Admin from '../models/adminModel';
+import { promises } from 'dns';
 
 
 dotenv.config();
@@ -30,48 +31,77 @@ export const loginUser = async (req: Request, res: Response): Promise<Response> 
     if (!validateEmail(correo)) {
       return res.status(400).json({ message: 'Correo electrónico inválido' });
     }
-    // const isActive = await validateStatus(correo);
+    let isActive ;
 
-    // if (!isActive) {
-    //   return res.status(401).json({ message: 'Cuenta desactivada' });
-    // }
     let user: AuthenticatedUser = await authenticateUser(correo, contraseña);
     let userType = 'user';
+  if (user) {
+    isActive= await validateStatus(correo,userType)
+    console.log(isActive);
+        
+
+  }
+
     if (!user) {
       user = await authenticateEmpleado(correo, contraseña);
       userType = 'empleado';
+      isActive= await validateStatus(correo,userType)
     }
     if (!user) {
       user = await authenticateAdministrador(correo, contraseña);
       userType = 'administrador';
+      isActive= await validateStatus(correo,userType)
+
     }
     if (!user) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
+    if(!isActive){
+      return res.status(404).json("Cuenta Desactivada")
+    }
+    console.log(isActive);
+    
     const token = jwt.sign(
       { correo: user.correo, role: user.role, userType },
       JWT_SECRET,
       { expiresIn: '1h' }
     );
- 
     res.setHeader('Authorization', `Bearer ${token}`);
-
     return res.status(200).json({ nombre: user.nombre, token });
   } catch (error) {
     console.error('Error al iniciar sesión:', error);
     return res.status(500).json({ message: 'Error al iniciar sesión' });
   }
 };
-// export const validateStatus = async (correo: string): Promise<boolean> => {
-//   try {
-//     const user = await User.findOne({ where: { correo } });
+ export const validateStatus = async (correo: string,rol:string) => {
+    console.log("pta vida");
+    console.log(rol);
+    
+    let user; 
+    
+    switch (rol) {
+      case 'user':
+        user = await User.findOne({ where: { correo } });
+        console.log(correo);
+        
+        break;
+      case 'administrador':
+        user = await Admin.findOne({ where: { correo } });
+        break;
+      case 'empleado':
+        user = await Empleado.findOne({ where: { correo } });
+        break;
+      default:
+        return false;
+    }
 
-//     if (user) {
-//       return user.estado !== false; // Retorna `true` si `estado` no es `false`, de lo contrario `false`
-//     }
-//     return false;
-//   } catch (error) {
-//     console.error('Error al verificar el estado del usuario:', error);
-//     throw new Error('Error al verificar el estado del usuario');
-//   }
-// };
+    if (user) {
+      return user.estado;
+    }
+  
+    
+    return false
+  };
+    
+  
+ 
