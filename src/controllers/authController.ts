@@ -28,6 +28,12 @@ type AuthenticatedUser = User | Empleado |Admin | null ;
 export const loginUser = async (req: Request, res: Response): Promise<Response> => {
   try {
     const { correo, contraseña } = req.body;
+    if (!correo) {
+      return res.status(400).json({message:'Correo Vacio'})
+    }
+    if (!contraseña) {
+      return res.status(400).json({message:'Correo Vacio'})
+    }
     if (!validateEmail(correo)) {
       return res.status(400).json({ message: 'Correo electrónico inválido' });
     }
@@ -59,7 +65,6 @@ export const loginUser = async (req: Request, res: Response): Promise<Response> 
     if(!isActive){
       return res.status(404).json("Cuenta Desactivada")
     }
-    console.log(isActive);
     
     const token = jwt.sign(
       { correo: user.correo, role: user.role, userType },
@@ -73,12 +78,8 @@ export const loginUser = async (req: Request, res: Response): Promise<Response> 
     return res.status(500).json({ message: 'Error al iniciar sesión' });
   }
 };
- export const validateStatus = async (correo: string,rol:string) => {
-    console.log("pta vida");
-    console.log(rol);
-    
+ export const validateStatus = async (correo: string,rol:string) => {   
     let user; 
-    
     switch (rol) {
       case 'user':
         user = await User.findOne({ where: { correo } });
