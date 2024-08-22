@@ -7,7 +7,7 @@ import { where } from 'sequelize';
 
 export const getAllPet = async (req: Request, res: Response): Promise<void> => {
     try {
-      const Pets = await Mascota.findAll();
+      const Pets = await Mascota.findAll({where:{Estado:true}});
       res.status(200).json(Pets); 
     } catch (error: any) {
       console.error('Error Al Buscar Las Mascotas: ', error);
