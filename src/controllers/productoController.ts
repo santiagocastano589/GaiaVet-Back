@@ -89,13 +89,12 @@ export const getProducts = async (req: Request, res: Response): Promise<void> =>
     }
   };
 
-  const client = new MercadoPagoConfig({ accessToken: 'APP_USR-8827196264162858-081217-755e5d2b5e722ca8f3c7042df40dbed3-1941685779' });
+const client = new MercadoPagoConfig({ accessToken: 'APP_USR-8827196264162858-081217-755e5d2b5e722ca8f3c7042df40dbed3-1941685779' });
 
 export const preferences_ = async (req: CreatePreferenceRequest, res: Response): Promise<void> => {
   const products = req.body.products;
 
   try {
-    // Construir el cuerpo para crear la preferencia
     const body = {
       items: products.map(product => ({
         id: product.idProduct,
@@ -112,16 +111,12 @@ export const preferences_ = async (req: CreatePreferenceRequest, res: Response):
       auto_return: "approved"
     };
 
-    // Crear la preferencia
     const preference = new Preference(client);
     const result = await preference.create({ body });
 
-    // Si se creó la preferencia exitosamente, actualizar el stock
     if (result && result.id) {
-      // Actualizar el stock de los productos
       await Promise.all(products.map(product => updateStock(product.idProduct, product.count)));
 
-      // Devolver el ID de la preferencia creada
       res.json({
         id: result.id,
       });
@@ -138,19 +133,28 @@ export const preferences_ = async (req: CreatePreferenceRequest, res: Response):
   }
 };
 
+
 async function updateStock(productId: string, count: number): Promise<void> {
   try {
-    // Supón que usas MongoDB
-    const product = Producto.findByPk(productId)
+    const product = await Producto.findByPk(productId);
+    
     if (!product) {
       throw new Error(`Producto con ID ${productId} no encontrado.`);
     }
+    if (count < 0) {
+      throw new Error('El valor de count no puede ser negativo.');
+    }
+
     product.stock = (product.stock || 0) - count;
 
-    // Guardar los cambios en la base de datos
+    if (product.stock < 0) {
+      throw new Error(`El stock del producto ${productId} no puede ser negativo.`);
+    }
+
     await product.save();
+    
   } catch (error) {
     console.error(`Error al actualizar el stock del producto ${productId}:`, error);
-    throw error; // Lanzar el error para que sea manejado por el catch principal
+    throw error; 
   }
 }
