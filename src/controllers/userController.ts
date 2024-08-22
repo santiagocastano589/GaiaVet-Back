@@ -39,15 +39,15 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
   
   export const findOneUser = async (req: Request, res: Response): Promise<void> => {
     try {
-      const cedula = req.body;
-      const user = await User.findOne({where:cedula});
+      const { cedula } = req.params;
+      const user = await User.findOne({ where: { cedula } });
       if (user) {
         res.status(200).json(user); 
       } else {
         res.status(404).json({ message: 'Usuario no encontrado' }); 
       }
     } catch (error: any) {
-      console.error('Error fetching users: ', error);
+      console.error('Error fetching user: ', error);
       res.status(500).json({ message: 'Error al encontrar el usuario.' });
     }
   };

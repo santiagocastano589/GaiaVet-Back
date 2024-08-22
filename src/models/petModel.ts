@@ -6,6 +6,7 @@ interface MascotaAttributes {
   nombre: string;
   edad: number;
   raza: string;
+  TipoMascota: string;
   peso: number;
   temperamento: string;
   foto: Blob; 
@@ -18,6 +19,7 @@ class Mascota extends Model<MascotaAttributes> implements MascotaAttributes {
   public nombre!: string;
   public edad!: number;
   public raza!: string;
+  public TipoMascota!: string;
   public peso!: number;
   public temperamento!: string;
   public foto!: Blob;
@@ -43,6 +45,10 @@ class Mascota extends Model<MascotaAttributes> implements MascotaAttributes {
           allowNull: false,
         },
         raza: {
+          type: DataTypes.STRING(20),
+          allowNull: false,
+        },
+        TipoMascota: {
           type: DataTypes.STRING(20),
           allowNull: false,
         },

@@ -31,8 +31,9 @@ export const getAllPet = async (req: Request, res: Response): Promise<void> => {
         return
       }
 
+
       const fk_cedulaU = cedula+"";
-      const newPet = await Mascota.create({ nombre, edad, raza, peso, temperamento, foto, fk_cedulaU,Estado}); 
+      const newPet = await Mascota.create({ nombre, edad, raza, TipoMascota, peso, temperamento, foto, fk_cedulaU,Estado}); 
       res.status(201).json(newPet);
     } catch (error) {
       console.error(error);
@@ -74,6 +75,7 @@ export const getAllPet = async (req: Request, res: Response): Promise<void> => {
       res.status(400).json({message:'Error Campos vacios'})
       return
     }
+
     try {
       const pet = await Mascota.findByPk(idMascota);
       
@@ -82,9 +84,10 @@ export const getAllPet = async (req: Request, res: Response): Promise<void> => {
             nombre,
              edad,
               raza,
-               peso,
-                temperamento,
-                foto
+               TipoMascota,
+                peso,
+                 temperamento,
+                  foto
         });
         const updatedPet= await Mascota.findByPk(idMascota);
         res.status(200).json(updatedPet);
