@@ -40,47 +40,7 @@ app.use('/',employeeRoutes)
 const client = new MercadoPagoConfig({ accessToken: 'APP_USR-8827196264162858-081217-755e5d2b5e722ca8f3c7042df40dbed3-1941685779' });
 
 
-app.post("/create_preference", async (req,res) => {
-  const products = [
-    {
-      idProduct:req.body.idProduct,
-      count : req.body.count
-    }
-  ]
-  try {
-    const body = {
-      items:[
-        {
-          id: req.body.idPurchase,
-          title: req.body.title,
-          quantity: Number(req.body.quantity),
-          unit_price: Number(req.body.price),
-          currency_id: "COP"
-        },
-      ],
-      back_urls:{
-        success: "https://www.youtube.com/watch?v=-e_3Cg9GZFU",
-        failure: "https://www.youtube.com/watch?v=-e_3Cg9GZFU",
-        pending: "https://www.youtube.com/watch?v=-e_3Cg9GZFU"
-      },
-      auto_return: "approved"
-    }
 
-    const preference = new Preference(client);
-    const result = await preference.create({ body });
-
-
-    res.json({
-      id: result.id,
-    })
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      error: "Error al crear la preferencia"
-    })
-    
-  }
-})
 
 app.listen(port, () => {
   async function testConnection() {
