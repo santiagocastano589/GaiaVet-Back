@@ -12,6 +12,7 @@ interface EmpleadoAttributes {
   correo: string;
   contraseña: string;
   role:string;
+  estado:boolean;
 }
 
 class Empleado extends Model<EmpleadoAttributes> implements EmpleadoAttributes {
@@ -23,6 +24,8 @@ class Empleado extends Model<EmpleadoAttributes> implements EmpleadoAttributes {
   public correo!: string;
   public contraseña!: string;
   public role!: string;
+  public estado!: boolean;
+
 
 
   static initModel(): void {
@@ -59,6 +62,10 @@ class Empleado extends Model<EmpleadoAttributes> implements EmpleadoAttributes {
         role:{
           type:DataTypes.STRING(20),
           defaultValue:'Empleado'
+        },
+        estado:{
+          type:DataTypes.BOOLEAN,
+          defaultValue:true
         }
       },
       {

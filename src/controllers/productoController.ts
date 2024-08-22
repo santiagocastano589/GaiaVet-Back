@@ -1,5 +1,20 @@
-import { Request, Response } from 'express';
+import { Request, response, Response } from 'express';
 import Producto from '../models/productoModel';
+import { MercadoPagoConfig, Preference } from 'mercadopago';
+import { error } from 'console';
+interface Product {
+  idProduct: string;
+  count: number;
+  title: string;
+  price: number;
+}
+
+// Define el tipo de cuerpo de la solicitud
+interface CreatePreferenceRequest extends Request {
+  body: {
+    products: Product[];
+  };
+}
 
 export const createProducto = async (req: Request, res: Response): Promise<Response> => {
   try {
@@ -72,5 +87,80 @@ export const getProducts = async (req: Request, res: Response): Promise<void> =>
     } catch (error) {
       console.error('Error al eliminar producto:', error);
       return res.status(500).json({ message: 'Error al eliminar producto' });
+    }
+  };
+
+const client = new MercadoPagoConfig({ accessToken: 'APP_USR-8827196264162858-081217-755e5d2b5e722ca8f3c7042df40dbed3-1941685779' });
+
+  export const preferences_ = async (req: CreatePreferenceRequest, res: Response): Promise<void> => {
+    const products = req.body.products;
+  
+    // Asegúrate de que `products` sea un array
+    if (!Array.isArray(products)) {
+       res.status(400).json({error: "El campo 'products' debe ser un array"});
+       return
+    }
+  
+    try {
+      const body = {
+        items: products.map(product => ({
+          id: product.idProduct,
+          title: product.title,
+          quantity: Number(product.count),
+          unit_price: Number(product.price),
+          currency_id: "COP"
+        })),
+        back_urls: {
+          success: "https://www.youtube.com/watch?v=-e_3Cg9GZFU",
+          failure: "https://www.youtube.com/watch?v=-e_3Cg9GZFU",
+          pending: "https://www.youtube.com/watch?v=-e_3Cg9GZFU"
+        },
+        auto_return: "approved"
+      };
+  
+      const preference = new Preference(client);
+      const result = await preference.create({ body });
+  
+      if (result && result.id) {
+        await Promise.all(products.map(product => updateStock(product.idProduct, product.count)));
+  
+        // Devolver el ID de la preferencia creada
+        res.json({
+          id: result.id,
+        });
+      } else {
+        res.status(500).json({
+          error: "No se pudo crear la preferencia"
+        });
+      }
+    } catch (error) {
+      console.error("Error al crear la preferencia:", error);
+      res.status(500).json({
+        error: "Error al crear la preferencia"
+      });
+    }
+  };
+
+  const updateStock = async (productId: string, count: number): Promise<void> => {
+    try {
+      const product = await Producto.findByPk(productId);
+  
+      if (!product) {
+        throw new Error(`Producto con ID ${productId} no encontrado.`);
+      }
+      if (count < 0) {
+        throw new Error('El valor de count no puede ser negativo.');
+      }
+  
+      product.stock = (product.stock || 0) - count;
+  
+      if (product.stock < 0) {
+        throw new Error(`El stock del producto ${productId} no puede ser negativo.`);
+      }
+  
+      await product.save();
+    } catch (error) {
+      console.error(`Error al actualizar el stock del producto ${productId}:`, error);
+      throw error;
     }
   };
