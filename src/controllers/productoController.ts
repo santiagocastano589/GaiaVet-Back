@@ -1,6 +1,7 @@
-import { Request, Response } from 'express';
+import { Request, response, Response } from 'express';
 import Producto from '../models/productoModel';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
+import { error } from 'console';
 interface Product {
   idProduct: string;
   count: number;
@@ -89,7 +90,7 @@ export const getProducts = async (req: Request, res: Response): Promise<void> =>
     }
   };
 
-  const client = new MercadoPagoConfig({ accessToken: 'APP_USR-8827196264162858-081217-755e5d2b5e722ca8f3c7042df40dbed3-1941685779' });
+const client = new MercadoPagoConfig({ accessToken: 'APP_USR-8827196264162858-081217-755e5d2b5e722ca8f3c7042df40dbed3-1941685779' });
 
   export const preferences_ = async (req: CreatePreferenceRequest, res: Response): Promise<void> => {
     const products = req.body.products;
@@ -140,18 +141,26 @@ export const getProducts = async (req: Request, res: Response): Promise<void> =>
     }
   };
 
-const updateStock = async (productId: string, count: number): Promise<void> => {
-  try {
-    const product = await Producto.findByPk(productId);
-    
-    if (!product) {
-      throw new Error(`Producto con ID ${productId} no encontrado.`);
+  const updateStock = async (productId: string, count: number): Promise<void> => {
+    try {
+      const product = await Producto.findByPk(productId);
+  
+      if (!product) {
+        throw new Error(`Producto con ID ${productId} no encontrado.`);
+      }
+      if (count < 0) {
+        throw new Error('El valor de count no puede ser negativo.');
+      }
+  
+      product.stock = (product.stock || 0) - count;
+  
+      if (product.stock < 0) {
+        throw new Error(`El stock del producto ${productId} no puede ser negativo.`);
+      }
+  
+      await product.save();
+    } catch (error) {
+      console.error(`Error al actualizar el stock del producto ${productId}:`, error);
+      throw error;
     }
-    product.stock = (product.stock || 0) - count;
-
-    await product.save();
-  } catch (error) {
-    console.error(`Error al actualizar el stock del producto ${productId}:`, error);
-    throw error;
-  }
-}
+  };
