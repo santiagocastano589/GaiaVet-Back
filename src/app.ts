@@ -15,7 +15,8 @@ import employeeRoutes from './routes/employeeRoutes';
 import productoRoutes from './routes/productoRoutes';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
 import Producto from './models/productoModel';
-
+import citaRoutes from './routes/citaRoutes'
+import Cita from './models/citaModel';
 dotenv.config();
 
 const app: Application = express();
@@ -28,6 +29,7 @@ Empleado.initModel();
 Admin.initModel();
 Mascota.initModel();
 Producto.initModel();
+Cita.initModel();
 
 app.use('/', userRoutes);
 app.use('/auth', authRoutes);
@@ -35,7 +37,7 @@ app.use('/', adminRoutes);
 app.use('/', petRoutes);
 app.use('/', productoRoutes);
 app.use('/',employeeRoutes)
-
+app.use('/', citaRoutes)
 
 const client = new MercadoPagoConfig({ accessToken: 'APP_USR-8827196264162858-081217-755e5d2b5e722ca8f3c7042df40dbed3-1941685779' });
 
