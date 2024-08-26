@@ -3,9 +3,7 @@ import User from '../models/userModel';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import { authenticateAdministrador } from '../services/administradorService';
-import { authenticateEmpleado } from '../services/empleadoService';
-import { authenticateUser } from '../services/userService';
+
 import Empleado from '../models/empleadoModel';
 import Admin from '../models/adminModel';
 import { promises } from 'dns';
@@ -21,58 +19,109 @@ const validateEmail = (email: string): boolean => {
 };
 
 
+type AuthenticatedUser = User | Empleado | Admin;
+type AuthError = "Contraseña Incorrecta" | null;
 
+// Función para autenticar usuario
+export const authenticateUser = async (correo: string, contraseña: string): Promise<AuthenticatedUser | AuthError> => {
+  const user = await User.findOne({ where: { correo } });
 
-type AuthenticatedUser = User | Empleado |Admin | null ;
+  if (user) {
+    if (await bcrypt.compare(contraseña, user.contraseña)) {
+      return user;
+    } else {
+      return "Contraseña Incorrecta";
+    }
+  }
+  return null;
+};
 
+// Función para autenticar empleado
+const authenticateEmpleado = async (correo: string, contraseña: string): Promise<AuthenticatedUser | AuthError> => {
+  const empleado = await Empleado.findOne({ where: { correo } });
+
+  if (empleado) {
+    if (await bcrypt.compare(contraseña, empleado.contraseña)) {
+      return empleado;
+    } else {
+      return "Contraseña Incorrecta";
+    }
+  }
+  return null;
+};
+
+// Función para autenticar administrador
+const authenticateAdministrador = async (correo: string, contraseña: string): Promise<AuthenticatedUser | AuthError> => {
+  const admin = await Admin.findOne({ where: { correo } });
+
+  if (admin) {
+    if (await bcrypt.compare(contraseña, admin.contraseña)) {
+      return admin;
+    } else {
+      return "Contraseña Incorrecta";
+    }
+  }
+  return null;
+};
+
+// Función para manejar el inicio de sesión
 export const loginUser = async (req: Request, res: Response): Promise<Response> => {
   try {
     const { correo, contraseña } = req.body;
-    if (!correo) {
-      return res.status(400).json({message:'Correo Vacio'})
+
+    if (!correo || !contraseña) {
+      return res.status(400).json({ message: 'Correo o contraseña vacíos' });
     }
-    if (!contraseña) {
-      return res.status(400).json({message:'Correo Vacio'})
-    }
+
     if (!validateEmail(correo)) {
       return res.status(400).json({ message: 'Correo electrónico inválido' });
     }
-    let isActive ;
 
-    let user: AuthenticatedUser = await authenticateUser(correo, contraseña);
+    // Autenticar como usuario
+    let user: AuthenticatedUser | AuthError = await authenticateUser(correo, contraseña);
     let userType = 'user';
-  if (user) {
-    isActive= await validateStatus(correo,userType)
-    console.log(isActive);
-        
 
-  }
+    if (user === "Contraseña Incorrecta") {
+      return res.status(401).json({ message: 'Contraseña incorrecta para usuario' });
+    }
 
+    // Si no se encontró el usuario, intentar autenticar como empleado
     if (!user) {
       user = await authenticateEmpleado(correo, contraseña);
       userType = 'empleado';
-      isActive= await validateStatus(correo,userType)
+      if (user === "Contraseña Incorrecta") {
+        return res.status(401).json({ message: 'Contraseña incorrecta para empleado' });
+      }
     }
+
+    // Si aún no se encontró el usuario, intentar autenticar como administrador
     if (!user) {
       user = await authenticateAdministrador(correo, contraseña);
       userType = 'administrador';
-      isActive= await validateStatus(correo,userType)
-
+      if (user === "Contraseña Incorrecta") {
+        return res.status(401).json({ message: 'Contraseña incorrecta para administrador' });
+      }
     }
+
     if (!user) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
-    if(!isActive){
-      return res.status(404).json("Cuenta Desactivada")
+
+    // Validar el estado del usuario
+    const isActive = await validateStatus(correo, userType);
+    if (!isActive) {
+      return res.status(403).json({ message: 'Cuenta desactivada' });
     }
-    
+
+    // Generar el token JWT
     const token = jwt.sign(
-      { correo: user.correo, role: user.role, userType },
+      { correo: (user as any).correo, role: (user as any).role, userType },
       JWT_SECRET,
       { expiresIn: '1h' }
     );
+
     res.setHeader('Authorization', `Bearer ${token}`);
-    return res.status(200).json({ nombre: user.nombre, token });
+    return res.status(200).json({ nombre: (user as any).nombre, token });
   } catch (error) {
     console.error('Error al iniciar sesión:', error);
     return res.status(500).json({ message: 'Error al iniciar sesión' });
