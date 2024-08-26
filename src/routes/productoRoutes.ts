@@ -9,5 +9,6 @@ router.get('/products', getProducts);
 router.put('/producto/:idProducto', authenticate, accessRole('administrador'), updateProducto);
 router.delete('/producto/:idProducto', authenticate, accessRole('administrador'), deleteProducto);
 router.post('/create_preference', preferences_);
+router.post('/')
 
 export default router;
