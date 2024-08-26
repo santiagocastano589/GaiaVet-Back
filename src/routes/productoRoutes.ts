@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createProducto, getProducts, updateProducto, deleteProducto, preferences_ } from '../controllers/productoController';
+import { createProducto, getProducts, updateProducto, deleteProducto, preferences_,webhook } from '../controllers/productoController';
 import { authenticate, accessRole } from '../middlewares/authMiddlaware';
 
 const router = Router();
@@ -9,6 +9,8 @@ router.get('/products', getProducts);
 router.put('/producto/:idProducto', authenticate, accessRole('administrador'), updateProducto);
 router.delete('/producto/:idProducto', authenticate, accessRole('administrador'), deleteProducto);
 router.post('/create_preference', preferences_);
-router.post('/')
+
+router.post('/webhook', webhook);
+
 
 export default router;
