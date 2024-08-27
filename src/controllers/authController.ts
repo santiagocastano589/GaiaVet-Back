@@ -22,7 +22,6 @@ const validateEmail = (email: string): boolean => {
 type AuthenticatedUser = User | Empleado | Admin;
 type AuthError = "Contraseña Incorrecta" | null;
 
-// Función para autenticar usuario
 export const authenticateUser = async (correo: string, contraseña: string): Promise<AuthenticatedUser | AuthError> => {
   const user = await User.findOne({ where: { correo } });
 
@@ -36,7 +35,6 @@ export const authenticateUser = async (correo: string, contraseña: string): Pro
   return null;
 };
 
-// Función para autenticar empleado
 const authenticateEmpleado = async (correo: string, contraseña: string): Promise<AuthenticatedUser | AuthError> => {
   const empleado = await Empleado.findOne({ where: { correo } });
 
@@ -50,7 +48,6 @@ const authenticateEmpleado = async (correo: string, contraseña: string): Promis
   return null;
 };
 
-// Función para autenticar administrador
 const authenticateAdministrador = async (correo: string, contraseña: string): Promise<AuthenticatedUser | AuthError> => {
   const admin = await Admin.findOne({ where: { correo } });
 
@@ -64,7 +61,6 @@ const authenticateAdministrador = async (correo: string, contraseña: string): P
   return null;
 };
 
-// Función para manejar el inicio de sesión
 export const loginUser = async (req: Request, res: Response): Promise<Response> => {
   try {
     const { correo, contraseña } = req.body;
@@ -77,7 +73,6 @@ export const loginUser = async (req: Request, res: Response): Promise<Response> 
       return res.status(400).json({ message: 'Correo electrónico inválido' });
     }
 
-    // Autenticar como usuario
     let user: AuthenticatedUser | AuthError = await authenticateUser(correo, contraseña);
     let userType = 'user';
 
@@ -85,7 +80,6 @@ export const loginUser = async (req: Request, res: Response): Promise<Response> 
       return res.status(401).json({ message: 'Contraseña incorrecta para usuario' });
     }
 
-    // Si no se encontró el usuario, intentar autenticar como empleado
     if (!user) {
       user = await authenticateEmpleado(correo, contraseña);
       userType = 'empleado';
@@ -94,7 +88,6 @@ export const loginUser = async (req: Request, res: Response): Promise<Response> 
       }
     }
 
-    // Si aún no se encontró el usuario, intentar autenticar como administrador
     if (!user) {
       user = await authenticateAdministrador(correo, contraseña);
       userType = 'administrador';
