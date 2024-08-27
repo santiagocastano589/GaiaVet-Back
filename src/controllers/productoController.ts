@@ -92,75 +92,95 @@ export const getProducts = async (req: Request, res: Response): Promise<void> =>
 
 const client = new MercadoPagoConfig({ accessToken: 'APP_USR-8827196264162858-081217-755e5d2b5e722ca8f3c7042df40dbed3-1941685779' });
 
-  export const preferences_ = async (req: CreatePreferenceRequest, res: Response): Promise<void> => {
-    const products = req.body.products;
-  
-    // Asegúrate de que `products` sea un array
-    if (!Array.isArray(products)) {
-       res.status(400).json({error: "El campo 'products' debe ser un array"});
-       return
-    }
-  
-    try {
-      const body = {
-        items: products.map(product => ({
-          id: product.idProduct,
-          title: product.title,
-          quantity: Number(product.count),
-          unit_price: Number(product.price),
-          currency_id: "COP"
-        })),
-        back_urls: {
-          success: "https://www.youtube.com/watch?v=-e_3Cg9GZFU",
-          failure: "https://www.youtube.com/watch?v=-e_3Cg9GZFU",
-          pending: "https://www.youtube.com/watch?v=-e_3Cg9GZFU"
-        },
-        auto_return: "approved"
-      };
-  
-      const preference = new Preference(client);
-      const result = await preference.create({ body });
-  
-      if (result && result.id) {
-        await Promise.all(products.map(product => updateStock(product.idProduct, product.count)));
-  
-        // Devolver el ID de la preferencia creada
-        res.json({
-          id: result.id,
-        });
-      } else {
-        res.status(500).json({
-          error: "No se pudo crear la preferencia"
-        });
-      }
-    } catch (error) {
-      console.error("Error al crear la preferencia:", error);
+export const preferences_ = async (req: Request, res: Response): Promise<void> => {
+  const products = req.body.products;
+
+  if (!Array.isArray(products)) {
+    res.status(400).json({ error: "El campo 'products' debe ser un array" });
+    return;
+  }
+
+  try {
+    const body = {
+      items: products.map(product => ({
+        id: product.idProduct,
+        title: product.title,
+        quantity: Number(product.count),
+        unit_price: Number(product.price),
+        currency_id: "COP"
+      })),
+      back_urls: {
+        success: "https://www.youtube.com/watch?v=-e_3Cg9GZFU",
+        failure: "https://www.youtube.com/watch?v=-e_3Cg9GZFU",
+        pending: "https://www.youtube.com/watch?v=-e_3Cg9GZFU"
+      },
+      notification_url: "https://gaiavet-back.onrender.com/webhook", // URL del webhook
+      auto_return: "approved"
+    };
+
+    const preference = new Preference(client);
+    const result = await preference.create({ body });
+
+    if (result && result.id) {
+      res.json({
+        id: result.id,
+      });
+    } else {
       res.status(500).json({
-        error: "Error al crear la preferencia"
+        error: "No se pudo crear la preferencia"
       });
     }
-  };
+  } catch (error) {
+    console.error("Error al crear la preferencia:", error);
+    res.status(500).json({
+      error: "Error al crear la preferencia"
+    });
+  }
+};
 
-  const updateStock = async (productId: string, count: number): Promise<void> => {
-    try {
-      const product = await Producto.findByPk(productId);
-  
-      if (!product) {
-        throw new Error(`Producto con ID ${productId} no encontrado.`);
-      }
-      if (count < 0) {
-        throw new Error('El valor de count no puede ser negativo.');
-      }
-  
-      product.stock = (product.stock || 0) - count;
-  
-      if (product.stock < 0) {
-        throw new Error(`El stock del producto ${productId} no puede ser negativo.`);
-      }
-  
-      await product.save();
-    } catch (error) {
-      console.error(`Error al actualizar el stock del producto ${productId}:`, error);
-      throw error;
+export const webhook = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const payment = req.body;
+
+    if (payment.type === "payment" && payment.data.status === "approved") {
+      const products = payment.data.additional_info.items;
+
+      await Promise.all(products.map((product: any) =>
+        updateStock(product.id as string, product.quantity as number)
+      ));
+      res.status(200).send('Stock actualizado');
+    } else {
+      res.status(200).send('Pago no aprobado, no se actualiza stock');
     }
-  };
+  } catch (error) {
+    console.error("Error en el webhook:", error);
+    res.status(500).send("Error en el webhook");
+  }
+};
+
+const updateStock = async (productId: string, count: number): Promise<void> => {
+  try {
+    const product = await Producto.findByPk(productId);
+
+    if (!product) {
+      console.error(`Producto con ID ${productId} no encontrado.`);
+      return;
+    }
+    if (count < 0) {
+      console.error('El valor de count no puede ser negativo.');
+      return;
+    }
+
+    product.stock = (product.stock || 0) - count;
+
+    if (product.stock < 0) {
+      console.error(`El stock del producto ${productId} no puede ser negativo.`);
+      return;
+    }
+
+    await product.save();
+  } catch (error) {
+    console.error(`Error al actualizar el stock del producto ${productId}:`, error);
+    throw error;
+  }
+};
