@@ -5,5 +5,5 @@ const router = Router();
 
 
 router.post('/registerE',authenticate,accessRole('administrador'),registerEmployee );
-router.post('/employees',authenticate,accessRole('administrador'),getAllEmployees );
+router.get('/employees',authenticate,accessRole('administrador'),getAllEmployees );
 export default router;
