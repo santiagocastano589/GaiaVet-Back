@@ -2,8 +2,12 @@ import { Request, Response } from 'express';
 import Mascota from '../models/petModel'
 import {CustomRequest} from '../middlewares/authMiddlaware'
 import User from '../models/userModel';
-import { where } from 'sequelize';
-
+export const gmail = async (req:CustomRequest,res:Response):Promise<void>=>{
+  const correo = req['user']['correo']
+  const user = await User.findOne({ where: { correo: correo } });
+  console.log(user);
+  
+}
 
 export const getAllPet = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -43,9 +47,10 @@ export const getAllPet = async (req: Request, res: Response): Promise<void> => {
   };
 
   export const findPetsUser = async (req: CustomRequest, res: Response): Promise<void> => {
+    const correo = req['user']['correo'];
+
     try {
-      const correo = req['user']['correo'];
-  
+      
       const user = await User.findOne({ where: { correo: correo } });
   
       if (!user) {

@@ -2,6 +2,10 @@ import Cita from "../models/citaModel";
 import User from "../models/userModel";
 import {CustomRequest} from '../middlewares/authMiddlaware'
 import { Request, Response } from 'express';
+import Admin from "../models/adminModel";
+import Mascota from "../models/petModel";
+
+
 
 export const newCita = async (req: CustomRequest, res: Response): Promise<void> => {
     const correo = req['user']['correo']
@@ -10,17 +14,28 @@ export const newCita = async (req: CustomRequest, res: Response): Promise<void> 
       res.status(404).json({ message: 'Usuario no encontrado' });
       return;
     }
-    const fk_cc_usuario = user.cedula.toString();
-    const { idCita,tipoCita, fechaHoraCita, tipoMascota, estadoCita, fk_nit, fk_cc_Empleado } = req.body;
+
+    const { idCita,tipoCita, fechaHoraCita, tipoMascota, estadoCita,fk_id_mascota, fk_cc_Empleado } = req.body;
 
     try {
-        const cita = await Cita.create({ idCita,tipoCita, fechaHoraCita, tipoMascota, estadoCita, fk_cc_usuario, fk_nit, fk_cc_Empleado });
+        const admin = await Admin.findByPk(159753);
+        if (!admin) {
+            res.status(404).json("")
+            return 
+        }
+        const fk_nit = admin?.nit
+
+        const cita = await Cita.create({ idCita,tipoCita, fechaHoraCita, tipoMascota, estadoCita, fk_id_mascota, fk_nit, fk_cc_Empleado });
         res.status(201).json(cita);
     } catch (error) {
         console.error('Error al crear la cita:', error);
         res.status(500).json({ message: 'Error al crear la cita', error });
     }
   };
+
+
+
+  
   export const updateCitaEstado = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
     const { estadoCita } = req.body;
@@ -44,31 +59,59 @@ export const newCita = async (req: CustomRequest, res: Response): Promise<void> 
 };
 
 export const getCitasPendientes = async (req: Request, res: Response): Promise<void> => {
-  const { user } = req.body; // Obtén el filtro del cuerpo de la solicitud
-
-  try {
+    try {
       const whereClause: any = {
-          estadoCita: 'Pendiente'
+        estadoCita: 'Pendiente'
       };
-
-      if (user) {
-          whereClause.fk_cc_usuario = user;
-      }
-
-      // Buscar todas las citas con estado 'Pendiente' y filtradas por usuario si se proporciona
-      const citasPendientes = await Cita.findAll({
-          where: whereClause
+        const citasPendientes = await Cita.findAll({
+        where: whereClause
       });
-
-      // Verificar si se encontraron citas pendientes
+  
       if (citasPendientes.length === 0) {
-          res.status(404).json({ message: 'No se encontraron citas pendientes' });
-          return;
+        res.status(404).json({ message: 'No se encontraron citas pendientes' });
+        return;
       }
-
       res.status(200).json(citasPendientes);
-  } catch (error) {
+    } catch (error) {
       console.error('Error al obtener las citas pendientes:', error);
       res.status(500).json({ message: 'Error al obtener las citas pendientes', error });
-  }
-};
+    }
+  };
+
+  export const getUserAppointment = async (req: CustomRequest, res: Response): Promise<void> => {
+    try {
+      const correo = req['user']['correo'];
+
+    if (!correo) {
+      res.status(404).json({ message: 'No se encontró el usuario'+correo });
+      return
+    }
+    const user = await User.findOne({ where: { correo: correo } });
+
+    if (!user) {
+      res.status(404).json({ message: 'No se encontró el usuario' });
+      return
+      
+    }
+        const pets = await Mascota.findAll({where:{fk_cedulaU:user.cedula}})
+        if (pets.length === 0) {
+            res.status(404).json({ message: 'No se encontraron mascotas para el usuario' });
+            return;
+          }
+    
+        const idMascotas = pets.map(mascota => mascota.idMascota);
+    
+        const Appointment = await Cita.findAll({where:{fk_id_mascota:idMascotas}})
+        if (Appointment.length === 0) {
+            res.status(404).json({ message: 'No se encontraron citas para las mascotas del usuario' });
+            return;
+          }
+   
+  
+    
+      res.status(200).json(Appointment);
+    } catch (error) {
+      console.error('Error al obtener las citas pendientes:', error);
+      res.status(500).json({ message: 'Error al obtener las citas pendientes', error });
+    }
+  };
