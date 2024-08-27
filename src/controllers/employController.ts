@@ -25,3 +25,13 @@ export const registerEmployee = async (req: Request, res: Response): Promise<Res
       return res.status(400).json({ message: 'Error al registrar el Usuario' });
     }
   };
+  
+  export const getAllEmployees = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const Employees = await Empleado.findAll();
+      res.status(200).json(Employees); 
+    } catch (error: any) {
+      console.error('Error fetching employees: ', error);
+      res.status(500).json({ message: 'Error fetching employees.' });      
+    }
+  };
