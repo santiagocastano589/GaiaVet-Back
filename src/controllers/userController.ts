@@ -5,8 +5,11 @@ import bcrypt from 'bcrypt';
 import { where } from 'sequelize';
 import Admin from '../models/adminModel';
 import { Op } from 'sequelize';
+import { sendEmail } from './emailController';
 
 const JWT_SECRET = "clavemamalona";
+
+
 
 
 export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
@@ -27,6 +30,20 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
       
       if (!exist) {
         const newUser = await User.create({ cedula, nombre, apellido, correo, contraseña, direccion, telefono, estado, role, imagen });
+        const emailRequest = {
+          subject: 'Equipo gaiavet🐾',
+          template: 'correo.html', 
+          dataTemplate: { name: nombre },
+          to: correo,
+        };
+        const request = {
+          json: async () => emailRequest,
+        } as any;
+
+        const context = {} as any;
+
+   
+        const response = await sendEmail(request, context);
         res.status(201).json(newUser);
       } else {
         res.status(400).json({ message: "Estos datos ya están asociados a otra cuenta" });

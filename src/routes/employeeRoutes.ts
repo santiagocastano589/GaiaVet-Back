@@ -1,9 +1,12 @@
 import { Router } from 'express';
-import { registerEmployee, getAllEmployees } from '../controllers/employController';
-import { authenticate,accessRole } from '../middlewares/authMiddlaware';
+import { createEmployee,deleteEmployee, updateEmployeed ,getAllEmployees,getEmployeesById } from '../controllers/employeeController';
+
 const router = Router();
 
+router.post('/empleados', createEmployee);
+router.get('/empleados', getAllEmployees);
+router.get('/empleado/:cedulaEmpleado', getEmployeesById);
+router.put('/empleados/:cedulaEmpleado',updateEmployeed);
+router.delete('/empleados/:cedulaEmpleado', deleteEmployee);
 
-router.post('/registerE',authenticate,accessRole('administrador'),registerEmployee );
-router.get('/employees',authenticate,accessRole('administrador'),getAllEmployees );
 export default router;

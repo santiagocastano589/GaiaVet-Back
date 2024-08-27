@@ -17,6 +17,8 @@ import { MercadoPagoConfig, Preference } from 'mercadopago';
 import Producto from './models/productoModel';
 import citaRoutes from './routes/citaRoutes'
 import Cita from './models/citaModel';
+import  sendEmailRoutes from './routes/sendEmailRoutes';
+
 dotenv.config();
 
 const app: Application = express();
@@ -36,8 +38,10 @@ app.use('/auth', authRoutes);
 app.use('/', adminRoutes);
 app.use('/', petRoutes);
 app.use('/', productoRoutes);
-app.use('/',employeeRoutes)
-app.use('/', citaRoutes)
+app.use('/',employeeRoutes);
+app.use('/', citaRoutes);
+app.use('/',sendEmailRoutes);
+
 
 const client = new MercadoPagoConfig({ accessToken: 'APP_USR-8827196264162858-081217-755e5d2b5e722ca8f3c7042df40dbed3-1941685779' });
 
