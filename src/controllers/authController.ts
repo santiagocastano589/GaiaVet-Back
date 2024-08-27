@@ -10,6 +10,7 @@ import Empleado from '../models/empleadoModel';
 import Admin from '../models/adminModel';
 
 
+
 dotenv.config();
 
 const JWT_SECRET = "clavemamalona";
@@ -22,12 +23,12 @@ const validateEmail = (email: string): boolean => {
 
 export const registerUser = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const { cedula, nombre, apellido, correo, contraseña, direccion, telefono,estado,role } = req.body;
+    const { cedula, nombre, apellido, correo, contraseña, direccion, telefono, estado, role } = req.body;
 
     if (!validateEmail(correo)) {
       return res.status(400).json({ message: 'Correo electrónico inválido' });
     }
-    const newUser = await User.create({ cedula, nombre, apellido, correo, contraseña, direccion, telefono,estado,role });
+    const newUser = await User.create({ cedula, nombre, apellido, correo, contraseña, direccion, telefono, estado, role });
     return res.status(201).json(newUser);
   } catch (error) {
     console.error(error);
@@ -35,7 +36,7 @@ export const registerUser = async (req: Request, res: Response): Promise<Respons
   }
 };
 
-type AuthenticatedUser = User | Empleado |Admin | null;
+type AuthenticatedUser = User | Empleado | Admin | null;
 
 export const loginUser = async (req: Request, res: Response): Promise<Response> => {
   try {
@@ -67,7 +68,7 @@ export const loginUser = async (req: Request, res: Response): Promise<Response> 
       JWT_SECRET,
       { expiresIn: '1h' }
     );
- 
+
     res.setHeader('Authorization', `Bearer ${token}`);
 
     return res.status(200).json({ nombre: user.nombre, token });

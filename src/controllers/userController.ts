@@ -4,6 +4,8 @@ import {CustomRequest} from '../middlewares/authMiddlaware'
 import bcrypt from 'bcrypt';
 import { where } from 'sequelize';
 import Admin from '../models/adminModel';
+import { sendEmail } from './emailController';
+
 
 
 const JWT_SECRET = "clavemamalona";
@@ -28,6 +30,22 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
     try {
       const { cedula, nombre, apellido, correo, contraseña, direccion, telefono, estado, role } = req.body;
       const newUser = await User.create({ cedula, nombre, apellido, correo, contraseña, direccion, telefono,estado ,role });
+      const emailRequest = {
+        subject: 'Equipo gaiavet🐾',
+        template: 'correo.html', 
+        dataTemplate: { name: nombre },
+        to: correo,
+    };
+
+    
+    const request = {
+        json: async () => emailRequest,
+    } as any;
+
+    const context = {} as any;
+
+   
+    const response = await sendEmail(request, context);
       res.status(201).json(newUser);
     } catch (error) {
       console.error(error); 
