@@ -57,7 +57,7 @@ export async function sendEmail(request: HttpRequest, context: InvocationContext
         const html = compiledTemplate({ name: dataTemplate.name });
 
         const emailMessage = {
-            senderAddress: "GaiaVet@9c75678d-f78e-4dca-9896-f31f7e1772fc.azurecomm.net",
+            senderAddress: "DoNotReply@9c75678d-f78e-4dca-9896-f31f7e1772fc.azurecomm.net",
             content: {
                 subject: subject,
                 html: html,
