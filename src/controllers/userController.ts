@@ -26,24 +26,26 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
   export const createUser = async (req: Request, res: Response): Promise<void> => {
     try {
       const { cedula, nombre, apellido, correo, contraseña, direccion, telefono, estado, role, imagen } = req.body;
-      const exist = await User.findOne({ where: { [Op.or]: [ { correo }, { cedula } ] } });
-      
+      const exist = await User.findOne({ where: { [Op.or]: [{ correo }, { cedula }] } });
+  
       if (!exist) {
         const newUser = await User.create({ cedula, nombre, apellido, correo, contraseña, direccion, telefono, estado, role, imagen });
+  
         const emailRequest = {
-          subject: 'Equipo gaiavet🐾',
-          template: 'correo.html', 
+          subject: 'Bienvenido a Gaiavet🐾',
+          template: 'correo.html',
           dataTemplate: { name: nombre },
           to: correo,
         };
         const request = {
           json: async () => emailRequest,
         } as any;
-
+  
         const context = {} as any;
-
-   
+  
         const response = await sendEmail(request, context);
+        console.log(`Email enviado: ${response.body}`);
+  
         res.status(201).json(newUser);
       } else {
         res.status(400).json({ message: "Estos datos ya están asociados a otra cuenta" });
@@ -53,7 +55,7 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
       res.status(400).json({ message: "Error al crear el Usuario" });
     }
   };
-  
+
   export const findOneUser = async (req: Request, res: Response): Promise<void> => {
     try {
       const { cedula } = req.params;
