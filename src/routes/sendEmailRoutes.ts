@@ -28,7 +28,7 @@ router.post('/send-email', async (req: Request, res: Response) => {
         
         res.status(response.status ?? 500).send(response.body ?? 'Error handling send email request.');
     } catch (error) {
-        console.error('Error handling send email request:', error);
+        console.error('Error handling send email request: ', error);
         res.status(500).send('Error handling send email request.');
     }
 });
