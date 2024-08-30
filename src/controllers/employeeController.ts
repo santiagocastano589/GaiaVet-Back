@@ -10,32 +10,18 @@ export const createEmployee = async (req: Request, res: Response) => {
         const employee = await Empleado.create(req.body);
         res.status(201).json(employee)
     } catch (error) {
-        res.status(500).json({ message: 'Error to create employee', error });
+        res.status(500).json({ message: 'Error al crear empleado', error });
     }
 
 }
 
-// export const updateEmployeed = async (req: Request, res: Response) => {
-//     try {
-//       const { cedulaEmpleado } = req.params;
-//       const employee = await Empleado.findByPk(cedulaEmpleado);
-//       if (employee) {
-//         await employee.update(req.body);
-//         res.status(200).json(employee);
-//       } else {
-//         res.status(404).json({ message: 'Employee not found' });
-//       }
-//     } catch (error) {
-//       res.status(500).json({ message: 'Error al actualizar el empleado', error });
-//     }
-//   };
 
   export const updateEmployeed = async (req: CustomRequest, res: Response): Promise<Response> => {
     try {
-      const { correo } = req.user; 
-      const { cedulaEmpleado, nombre, apellido, contraseña, edad, tiempoExp, estado } = req.body;
+      const { cedulaEmpleado } = req.params; 
+      const { nombre, apellido, correo, contraseña, edad, tiempoExp, estado } = req.body;
   
-      const employee = await Empleado.findOne({ where: { correo } });
+      const employee = await Empleado.findOne({ where: { cedulaEmpleado } });
   
       if (!employee) {
         return res.status(404).json({ message: 'Empleado no encontrado' });
@@ -45,7 +31,6 @@ export const createEmployee = async (req: Request, res: Response) => {
         return res.status(400).json({ message: 'Correo electrónico inválido' });
       }
   
-      if (cedulaEmpleado) employee.cedulaEmpleado = cedulaEmpleado;
       if (nombre) employee.nombre = nombre;
       if (apellido) employee.apellido = apellido;
       if (correo) employee.correo = correo;
@@ -69,8 +54,6 @@ export const createEmployee = async (req: Request, res: Response) => {
     }
   };
   
-  
-
 
 export const getAllEmployees = async (req: Request, res: Response) => {
     try {
@@ -78,7 +61,7 @@ export const getAllEmployees = async (req: Request, res: Response) => {
         res.status(200).json(employee)
 
     } catch (error) {
-        res.status(500).json({ message: 'Error to get employees', error });
+        res.status(500).json({ message: 'Error al traer los empleados', error });
     }
 
 }
@@ -98,6 +81,7 @@ export const getEmployeesById = async (req:Request, res:Response) => {
 
 }
 
+
 export const deleteEmployee = async (req:Request , res:Response) => {
 
     try{
@@ -105,15 +89,30 @@ export const deleteEmployee = async (req:Request , res:Response) => {
     const employee = await Empleado.findByPk(cedulaEmpleado)
     if (employee) {
         await employee.destroy()
-        res.status(200).json({mesagge:'Employee eliminated'})
+        res.status(200).json({mesagge:'Empleado eliminado con exito'})
     }else{
-        res.status(404).json({message:'employee not found'})
+        res.status(404).json({message:'Empleado no encontrado'})
     }
     }catch(error){
-        res.status(500).json({message:'error to eliminated employee', error})
+        res.status(500).json({message:'Error al eliminar empleado', error})
     }
-
-   
-    
-    
 }
+
+
+// export const deleteEmployee = async (req: Request, res: Response): Promise<void> => {
+//   const { cedulaEmpleado } = req.params;
+
+//   try {
+//     const employee = await Empleado.findByPk(cedulaEmpleado);
+
+//     if (employee) {
+//       await Empleado.update({ estado: false }, { where: { cedulaEmpleado } })
+//       res.status(200).json({ message: 'Empleado eliminado exitosamente' });
+//     } else {
+//       res.status(404).json({ message: 'Empleado no encontrado' });
+//     }
+//   } catch (error: any) {
+//     console.error('Error deleting employee: ', error);
+//     res.status(500).json({ message: 'Error al eliminar el Empleado' });
+//   }
+// };
