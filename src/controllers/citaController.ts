@@ -20,8 +20,8 @@ export const newCita = async (req: CustomRequest, res: Response): Promise<void> 
     try {
         const admin = await Admin.findByPk(159753);
         if (!admin) {
-            res.status(404).json("")
-            return 
+            res.status(404).json("Error")
+            return
         }
         const fk_nit = admin?.nit
 

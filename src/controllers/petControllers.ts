@@ -41,7 +41,6 @@ export const getAllPet = async (req: Request, res: Response): Promise<void> => {
       const newPet = await Mascota.create({ nombre, edad, raza, TipoMascota, peso, temperamento, foto, fk_cedulaU,Estado}); 
       res.status(201).json(newPet);
     } catch (error) {
-      console.error(error);
       res.status(500).json({ message: 'Error al crear la mascota' });
     }
   };
