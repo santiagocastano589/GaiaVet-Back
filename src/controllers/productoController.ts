@@ -110,9 +110,9 @@ export const preferences_ = async (req: Request, res: Response): Promise<void> =
         currency_id: "COP"
       })),
       back_urls: {
-        success: "https://gaiavet-back.onrender.com/products",
-        failure: "https://www.youtube.com/watch?v=-e_3Cg9GZFU",
-        pending: "https://www.youtube.com/watch?v=-e_3Cg9GZFU"
+        success: "https://gaiavet-back.onrender.com/webhook",
+        failure: "https://gaiavet-back.onrender.com/webhook",
+        pending: "https://gaiavet-back.onrender.com/webhook"
       },
       notification_url: "https://gaiavet-back.onrender.com/webhook", // URL del webhook
       auto_return: "approved"
