@@ -93,7 +93,7 @@ export const getProducts = async (req: Request, res: Response): Promise<void> =>
 const client = new MercadoPagoConfig({ accessToken: 'APP_USR-8827196264162858-081217-755e5d2b5e722ca8f3c7042df40dbed3-1941685779' });
 
 export const preferences_ = async (req: Request, res: Response): Promise<void> => {
-  const products = req.body.products;
+  const products = req.body.products as Product[]; // Type assertion for clarity
 
   if (!Array.isArray(products)) {
     res.status(400).json({ error: "El campo 'products' debe ser un array" });
@@ -102,52 +102,50 @@ export const preferences_ = async (req: Request, res: Response): Promise<void> =
 
   try {
     const body = {
-      items: products.map(product => ({
+      items: products.map((product) => ({
         id: product.idProduct,
         title: product.title,
         quantity: Number(product.count),
         unit_price: Number(product.price),
-        currency_id: "COP"
+        currency_id: "COP",
       })),
       back_urls: {
         success: "https://gaiavet-back.onrender.com/webhook",
         failure: "https://gaiavet-back.onrender.com/webhook",
-        pending: "https://gaiavet-back.onrender.com/webhook"
+        pending: "https://gaiavet-back.onrender.com/webhook",
       },
       notification_url: "https://gaiavet-back.onrender.com/webhook", // URL del webhook
-      auto_return: "approved"
+      auto_return: "approved",
     };
 
     const preference = new Preference(client);
     const result = await preference.create({ body });
 
     if (result && result.id) {
-      res.json({
-        id: result.id,
-      });
+      res.json({ id: result.id });
     } else {
-      res.status(500).json({
-        error: "No se pudo crear la preferencia"
-      });
+      res.status(500).json({ error: "No se pudo crear la preferencia" });
     }
   } catch (error) {
     console.error("Error al crear la preferencia:", error);
-    res.status(500).json({
-      error: "Error al crear la preferencia"
-    });
+    res.status(500).json({ error: "Error al crear la preferencia" });
   }
 };
-
+interface product {
+  idProducto: string;
+  stock: number;
+}
 export const webhook = async (req: Request, res: Response): Promise<void> => {
   try {
-    const payment = req.body;
+    const payment = req.body; 
 
     if (payment.type === "payment" && payment.data.status === "approved") {
       const products = payment.data.additional_info.items;
 
-      await Promise.all(products.map((product: any) =>
-        updateStock(product.id as string, product.quantity as number)
-      ));
+      await Promise.all(
+        products.map(async (product:product) => await updateStock(product.idProducto, product.stock))
+      );
+
       res.status(200).send('Stock actualizado');
     } else {
       res.status(200).send('Pago no aprobado, no se actualiza stock');
@@ -158,6 +156,7 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+// updateStock function
 const updateStock = async (productId: string, count: number): Promise<void> => {
   try {
     const product = await Producto.findByPk(productId);
@@ -166,21 +165,17 @@ const updateStock = async (productId: string, count: number): Promise<void> => {
       console.error(`Producto con ID ${productId} no encontrado.`);
       return;
     }
+
     if (count < 0) {
       console.error('El valor de count no puede ser negativo.');
       return;
     }
 
-    product.stock = (product.stock || 0) - count;
-
-    if (product.stock < 0) {
-      console.error(`El stock del producto ${productId} no puede ser negativo.`);
-      return;
-    }
+    product.stock = Math.max(0, product.stock || 0) - count; // Ensure stock doesn't go negative
 
     await product.save();
   } catch (error) {
     console.error(`Error al actualizar el stock del producto ${productId}:`, error);
-    throw error;
+    throw error; // Re-throw error for potential handling in the calling function
   }
 };
