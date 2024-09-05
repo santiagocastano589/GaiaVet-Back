@@ -2,8 +2,12 @@ import { Request, Response } from 'express';
 import Mascota from '../models/petModel'
 import {CustomRequest} from '../middlewares/authMiddlaware'
 import User from '../models/userModel';
-import { where } from 'sequelize';
-
+export const gmail = async (req:CustomRequest,res:Response):Promise<void>=>{
+  const correo = req['user']['correo']
+  const user = await User.findOne({ where: { correo: correo } });
+  console.log(user);
+  
+}
 
 export const getAllPet = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -37,15 +41,15 @@ export const getAllPet = async (req: Request, res: Response): Promise<void> => {
       const newPet = await Mascota.create({ nombre, edad, raza, TipoMascota, peso, temperamento, foto, fk_cedulaU,Estado}); 
       res.status(201).json(newPet);
     } catch (error) {
-      console.error(error);
       res.status(500).json({ message: 'Error al crear la mascota' });
     }
   };
 
   export const findPetsUser = async (req: CustomRequest, res: Response): Promise<void> => {
+    const correo = req['user']['correo'];
+
     try {
-      const correo = req['user']['correo'];
-  
+      
       const user = await User.findOne({ where: { correo: correo } });
   
       if (!user) {

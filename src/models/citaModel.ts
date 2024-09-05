@@ -7,7 +7,7 @@ interface CitaAttributes {
   fechaHoraCita: Date;
   tipoMascota: string;
   estadoCita?: string;
-  fk_cc_usuario?: string;
+  fk_id_mascota?: number;
   fk_nit?: number;
   fk_cc_Empleado?: string;
 }
@@ -18,7 +18,7 @@ class Cita extends Model<CitaAttributes> implements CitaAttributes {
   public fechaHoraCita!: Date;
   public tipoMascota!: string;
   public estadoCita!: string;
-  public fk_cc_usuario!: string;
+  public fk_id_mascota!: number;
   public fk_nit!: number;
   public fk_cc_Empleado!: string;
 
@@ -48,12 +48,12 @@ class Cita extends Model<CitaAttributes> implements CitaAttributes {
           values:['Pendiente','Cancelada','Confirmada','Terminada'],
           defaultValue:"Pendiente"
         },
-        fk_cc_usuario:{
-          type: DataTypes.STRING(15),
+        fk_id_mascota:{
+          type: DataTypes.NUMBER,
           allowNull: false,
           references:{
-            model:'usuario',
-            key:'cedula'
+            model:'mascota',
+            key:'idMascota'
           },
         },
         fk_nit:{
@@ -80,7 +80,6 @@ class Cita extends Model<CitaAttributes> implements CitaAttributes {
         sequelize,
         tableName: 'cita', 
         timestamps: false, 
-        underscored: true, 
       }
     );
   }
