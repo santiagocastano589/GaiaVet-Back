@@ -133,10 +133,13 @@ export const preferences_ = async (req: Request, res: Response): Promise<void> =
   }
 };
 
+
+
+
 export const webhook = async (req: Request, res: Response): Promise<void> => {
   try {
-    const payment = req.body as Payment; 
-    console.log(payment+"Naa");
+    const payment = req.body as Payment; // Type assertion for clarity
+    console.log(payment);
     
     // Basic validation of payment structure
     if (!payment.data || payment.data.status !== 'approved') {
