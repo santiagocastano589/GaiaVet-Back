@@ -148,7 +148,7 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
 
     try {
       await Promise.all(
-        products.map((product) => updateStock(product.idProducto, product.stock))
+        products.map((product) => updateStock(product.idProducto, product.quantity))
       );
       res.status(200).send('Stock actualizado');
     } catch (error) {
