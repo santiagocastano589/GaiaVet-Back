@@ -133,10 +133,10 @@ export const preferences_ = async (req: Request, res: Response): Promise<void> =
   }
 };
 
-export const webhook = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const payment = req.body as Payment; // Type assertion for clarity
-    console.log(payment);
+export const webhook = async (req: Request, res: Response): Promise<void> => { 
+    try {
+      const payment = req.body as Payment; 
+    console.log(payment+"Naa");
     
     // Basic validation of payment structure
     if (!payment.data || payment.data.status !== 'approved') {
@@ -145,8 +145,6 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
     }
 
     const products = payment.data.additional_info.items;
-
-    try {
       await Promise.all(
         products.map((product) => updateStock(product.idProducto, product.quantity))
       );
@@ -155,10 +153,7 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
       console.error('Error updating stock:', error);
       res.status(500).send('Error al actualizar el stock');
     }
-  } catch (error) {
-    console.error('Error en el webhook:', error);
-    res.status(500).send('Error en el webhook');
-  }
+  
 };
 // updateStock function
 const updateStock = async (productId: string, count: number): Promise<void> => {
