@@ -132,14 +132,12 @@ export const preferences_ = async (req: Request, res: Response): Promise<void> =
     res.status(500).json({ error: "Error al crear la preferencia" });
   }
 };
-interface product {
-  idProducto: string;
-  stock: number;
-}
+
 export const webhook = async (req: Request, res: Response): Promise<void> => {
   try {
     const payment = req.body as Payment; // Type assertion for clarity
-
+    console.log(payment);
+    
     // Basic validation of payment structure
     if (!payment.data || payment.data.status !== 'approved') {
       res.status(200).send('Pago no aprobado, no se actualiza stock');
