@@ -2,6 +2,7 @@ import { Request, response, Response } from 'express';
 import Producto from '../models/productoModel';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
 import { error } from 'console';
+import { Payment } from 'mercadopago/dist/clients/point/commonTypes';
 interface Product {
   idProduct: string;
   count: number;
@@ -137,27 +138,30 @@ interface product {
 }
 export const webhook = async (req: Request, res: Response): Promise<void> => {
   try {
-    const payment = req.body; 
-    res.status(200).send(payment);
+    const payment = req.body as Payment; // Type assertion for clarity
 
-
-    if (payment.type === "payment" && payment.data.status === "approved") {
-      const products = payment.data.additional_info.items;
-
-      await Promise.all(
-        products.map(async (product:product) => await updateStock(product.idProducto, product.stock))
-      );
-
-      res.status(200).send('Stock actualizado');
-    } else {
+    // Basic validation of payment structure
+    if (!payment.data || payment.data.status !== 'approved') {
       res.status(200).send('Pago no aprobado, no se actualiza stock');
+      return 
+    }
+
+    const products = payment.data.additional_info.items;
+
+    try {
+      await Promise.all(
+        products.map((product) => updateStock(product.idProducto, product.stock))
+      );
+      res.status(200).send('Stock actualizado');
+    } catch (error) {
+      console.error('Error updating stock:', error);
+      res.status(500).send('Error al actualizar el stock');
     }
   } catch (error) {
-    console.error("Error en el webhook:", error);
-    res.status(500).send("Error en el webhook");
+    console.error('Error en el webhook:', error);
+    res.status(500).send('Error en el webhook');
   }
 };
-
 // updateStock function
 const updateStock = async (productId: string, count: number): Promise<void> => {
   try {
