@@ -110,7 +110,7 @@ export const preferences_ = async (req: Request, res: Response): Promise<void> =
         currency_id: "COP"
       })),
       back_urls: {
-        success: "https://www.youtube.com/watch?v=-e_3Cg9GZFU",
+        success: "https://gaiavet-back.onrender.com/products",
         failure: "https://www.youtube.com/watch?v=-e_3Cg9GZFU",
         pending: "https://www.youtube.com/watch?v=-e_3Cg9GZFU"
       },
