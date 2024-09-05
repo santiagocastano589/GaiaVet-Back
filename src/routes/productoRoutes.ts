@@ -10,7 +10,7 @@ router.put('/producto/:idProducto', authenticate, accessRole('administrador'), u
 router.delete('/producto/:idProducto', authenticate, accessRole('administrador'), deleteProducto);
 router.post('/create_preference', preferences_);
 
-router.post('/webhook', webhook);
+router.get('/webhook', webhook);
 
 
 export default router;
