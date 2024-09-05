@@ -138,6 +138,8 @@ interface product {
 export const webhook = async (req: Request, res: Response): Promise<void> => {
   try {
     const payment = req.body; 
+    res.status(200).send(payment);
+
 
     if (payment.type === "payment" && payment.data.status === "approved") {
       const products = payment.data.additional_info.items;
