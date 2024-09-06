@@ -1,4 +1,5 @@
-    import { HttpRequest, HttpResponseInit, InvocationContext } from '@azure/functions';
+    import { HttpRequest, HttpResponse, HttpResponseInit, InvocationContext } from '@azure/functions';
+import { request } from 'http';
     const Handlebars = require('handlebars');
     const { EmailClient } = require("@azure/communication-email");
     const fs = require('fs');
@@ -81,4 +82,8 @@
                 body: 'Error sending email.'
             };
         }
+    }
+
+    export async function sendEmailF(request:HttpRequest,context: InvocationContext) {
+        
     }
