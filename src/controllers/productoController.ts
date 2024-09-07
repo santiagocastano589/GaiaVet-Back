@@ -2,7 +2,6 @@ import { Request, response, Response } from 'express';
 import Producto from '../models/productoModel';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
 import { error } from 'console';
-import { Payment } from 'mercadopago/dist/clients/point/commonTypes';
 interface Product {
   idProduct: string;
   count: number;
@@ -14,6 +13,18 @@ interface Product {
 interface CreatePreferenceRequest extends Request {
   body: {
     products: Product[];
+  };
+
+}
+interface Payment {
+  data: {
+    status: string; 
+    additional_info: {
+      items: Array<{
+        idProducto: string; 
+        quantity: number;   
+      }>;
+    };
   };
 }
 

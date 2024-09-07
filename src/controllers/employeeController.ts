@@ -19,7 +19,7 @@ export const createEmployee = async (req: Request, res: Response) => {
   export const updateEmployeed = async (req: CustomRequest, res: Response): Promise<Response> => {
     try {
       const { cedulaEmpleado } = req.params; 
-      const { nombre, apellido, correo, contraseña, edad, tiempoExp, estado } = req.body;
+      const { nombre, apellido, correo, contraseña, edad, tiempoExp, estado,foto } = req.body;
   
       const employee = await Empleado.findOne({ where: { cedulaEmpleado } });
   
@@ -43,6 +43,8 @@ export const createEmployee = async (req: Request, res: Response) => {
       }
       if (edad) employee.edad = edad;
       if (tiempoExp) employee.tiempoExp = tiempoExp;
+      if (foto) employee.foto=foto      
+      
       if (typeof estado === 'boolean') employee.estado = estado;
   
       await employee.save();
@@ -63,6 +65,18 @@ export const getAllEmployees = async (req: Request, res: Response) => {
     } catch (error) {
         res.status(500).json({ message: 'Error al traer los empleados', error });
     }
+
+}
+
+export const getEmployeesServices = async (req: Request, res: Response) => {
+  const cargo = req.body
+  try {
+
+      const employees = await Empleado.findAll({where:cargo})
+      res.status(200).json(employees)
+  } catch (error) {
+      res.status(500).json({ message: 'Error al traer los empleados', error });
+  }
 
 }
 
@@ -98,21 +112,3 @@ export const deleteEmployee = async (req:Request , res:Response) => {
     }
 }
 
-
-// export const deleteEmployee = async (req: Request, res: Response): Promise<void> => {
-//   const { cedulaEmpleado } = req.params;
-
-//   try {
-//     const employee = await Empleado.findByPk(cedulaEmpleado);
-
-//     if (employee) {
-//       await Empleado.update({ estado: false }, { where: { cedulaEmpleado } })
-//       res.status(200).json({ message: 'Empleado eliminado exitosamente' });
-//     } else {
-//       res.status(404).json({ message: 'Empleado no encontrado' });
-//     }
-//   } catch (error: any) {
-//     console.error('Error deleting employee: ', error);
-//     res.status(500).json({ message: 'Error al eliminar el Empleado' });
-//   }
-// };

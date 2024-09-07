@@ -4,6 +4,7 @@ import {CustomRequest} from '../middlewares/authMiddlaware'
 import { Request, Response } from 'express';
 import Admin from "../models/adminModel";
 import Mascota from "../models/petModel";
+import moment from 'moment-business-days'; 
 
 
 
@@ -113,5 +114,34 @@ export const getCitasPendientes = async (req: Request, res: Response): Promise<v
     } catch (error) {
       console.error('Error al obtener las citas pendientes:', error);
       res.status(500).json({ message: 'Error al obtener las citas pendientes', error });
+    }
+  };
+  export const updateCita = async (req: CustomRequest, res: Response): Promise<void> => {
+    const { idCita } = req.body;
+    const { fechaHoraCita } = req.body;
+  
+    try {
+      const cita = await Cita.findByPk(idCita);
+      if (!cita) {
+        res.status(404).json({ message: 'Cita no encontrada' });
+        return;
+      }
+  
+      const nuevaFecha = moment(fechaHoraCita);
+      const hoy = moment();
+  
+      if (!nuevaFecha.isBusinessDay() || nuevaFecha.isSameOrBefore(hoy.businessAdd(2))) {
+        res.status(400).json({
+          message: 'La fecha debe ser al menos 2 días hábiles después de la fecha actual.',
+        });
+        return;
+      }
+        cita.fechaHoraCita = nuevaFecha.toDate();
+      await cita.save();
+  
+      res.status(200).json({ message: 'Fecha de la cita actualizada correctamente', cita });
+    } catch (error) {
+      console.error('Error al actualizar la cita:', error);
+      res.status(500).json({ message: 'Error al actualizar la cita', error });
     }
   };

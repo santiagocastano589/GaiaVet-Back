@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createEmployee,deleteEmployee, updateEmployeed ,getAllEmployees,getEmployeesById } from '../controllers/employeeController';
+import { createEmployee,deleteEmployee, updateEmployeed ,getAllEmployees,getEmployeesById, getEmployeesServices } from '../controllers/employeeController';
 import { authenticate,accessRole } from '../middlewares/authMiddlaware';
 
 const router = Router();
@@ -9,5 +9,6 @@ router.get('/employees',authenticate,accessRole('administrador'), getAllEmployee
 router.get('/employee/:cedulaEmpleado',authenticate,accessRole('administrador'), getEmployeesById);
 router.put('/updateEmployee/:cedulaEmpleado',authenticate,accessRole('administrador'),updateEmployeed);
 router.delete('/deleteEmployee/:cedulaEmpleado',authenticate,accessRole('administrador'), deleteEmployee);
+router.get('/employeServices',authenticate,accessRole(['User,administrador']),getEmployeesServices);
 
 export default router;
