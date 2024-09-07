@@ -148,33 +148,26 @@ export const preferences_ = async (req: Request, res: Response): Promise<void> =
 
 
 export const webhook = async (req: Request, res: Response): Promise<void> => {
-  const payment = req.body as Payment; // Type assertion for clarity
-  console.log("Webhook payment data:", JSON.stringify(req.body, null, 2));
- 
   try {
-    
-    // Basic validation of payment structure
-    if (!payment.data || payment.data.status !== 'approved') {
-      res.status(200).send('Pago no aprobado, no se actualiza stock');
-      return 
-    }
+    const payment = req.body; 
 
-    const products = payment.data.additional_info.items;
+    console.log("Notificación recibida:", JSON.stringify(payment, null, 2));
 
-    try {
-      await Promise.all(
-        products.map((product) => updateStock(product.idProducto, product.quantity))
-      );
-      res.status(200).send('Stock actualizado');
-    } catch (error) {
-      console.error('Error updating stock:', error);
-      res.status(500).send('Error al actualizar el stock');
+    if (payment.type === 'payment' && payment.action === 'payment.updated') {
+      const status = payment.data.status;
+      const paymentId = payment.data.id;
+
+      if (status === 'approved') {
+        console.log(`Pago aprobado con ID: ${paymentId}`);
+      }
     }
+    res.status(200).send('Webhook recibido con éxito');
   } catch (error) {
-    console.error('Error en el webhook:', error);
-    res.status(500).send('Error en el webhook');
+    console.error('Error al procesar el webhook:', error);
+    res.status(500).send('Error al procesar el webhook');
   }
 };
+
 // updateStock function
 const updateStock = async (productId: string, count: number): Promise<void> => {
   try {
