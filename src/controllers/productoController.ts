@@ -148,9 +148,10 @@ export const preferences_ = async (req: Request, res: Response): Promise<void> =
 
 
 export const webhook = async (req: Request, res: Response): Promise<void> => {
+  const payment = req.body as Payment; // Type assertion for clarity
+  console.log("Webhook payment data:", JSON.stringify(req.body, null, 2));
+ 
   try {
-    const payment = req.body as Payment; // Type assertion for clarity
-    console.log("Webhook payment data:", JSON.stringify(req.body, null, 2));
     
     // Basic validation of payment structure
     if (!payment.data || payment.data.status !== 'approved') {
