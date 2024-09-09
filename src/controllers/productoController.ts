@@ -150,10 +150,10 @@ export const preferences_ = async (req: Request, res: Response): Promise<void> =
 export const webhook = async (req: Request, res: Response): Promise<void> => {
   // try {
     try {
-      const payment = req.query; // Aquí recibes la notificación
+      const payment= req.query; // Aquí recibes la notificación
       // Verifica si payment.id es una cadena de caracteres
-      if (typeof req.query.id !== 'string') {
-        res.status(200).json(payment)
+      if (typeof payment.payment_id !== 'string') {
+        res.status(200).json(payment.payment_id)
         return;
       }
   
