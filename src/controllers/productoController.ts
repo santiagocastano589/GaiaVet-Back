@@ -150,7 +150,7 @@ export const preferences_ = async (req: Request, res: Response): Promise<void> =
 export const webhook = async (req: Request, res: Response): Promise<void> => {
   try {
     const payment = req.query; // Aquí recibes la notificación
-    res.status(200).json(payment)
+    // res.status(200).json(payment)
     const response = await fetch(`https://api.mercadopago.com/v1/payments/${payment.id}`, {
       method: 'GET',
       headers: {
@@ -168,7 +168,7 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
     console.log(paymentData);
 
     // Responde con el estado HTTP 200 OK y los datos de pago
-    res.status(200).json(paymentData);
+    res.status(200).json(paymentData+"1");
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
