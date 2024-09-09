@@ -161,7 +161,7 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
       const accessToken = 'APP_USR-8827196264162858-081217-755e5d2b5e722ca8f3c7042df40dbed3-1941685779'; // Reemplaza con tu token de acceso
   
       // Realiza la solicitud a la API de Mercado Pago
-      const response = await fetch(`https://api.mercadopago.com/v1/payments/${payment.id}`, {
+      const response = await fetch(`https://api.mercadopago.com/v1/payments/${payment.payment_id}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${accessToken}`,
