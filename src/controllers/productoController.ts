@@ -148,40 +148,42 @@ export const preferences_ = async (req: Request, res: Response): Promise<void> =
 
 
 export const webhook = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const payment = req.body; // Aquí recibes la notificación
+  // try {
+    const payment = req.query; // Aquí recibes la notificación
+    res.status(200).json(payment)
+    return
 
 
     // Puedes validar el tipo de evento recibido
-    if (payment?.type === 'payment' && payment.data?.status === 'approved') {
-      const paymentId = payment.data.id;
-      console.log(`Pago aprobado con ID: ${paymentId}`);
+  //   if (payment?.type === 'payment' && payment.data?.status === 'approved') {
+  //     const paymentId = payment.data.id;
+  //     console.log(`Pago aprobado con ID: ${paymentId}`);
 
-      const products = payment.data.additional_info?.items;
+  //     const products = payment.data.additional_info?.items;
 
-      if (!products || products.length === 0) {
-        res.status(400).send('No se encontraron productos en la notificación.');
-        return;
-      }
+  //     if (!products || products.length === 0) {
+  //       res.status(400).send('No se encontraron productos en la notificación.');
+  //       return;
+  //     }
 
-      try {
-        // Actualización del stock de cada producto
-        await Promise.all(
-          products.map((Product:Product) =>
-            updateStock(Product.idProduct, Product.count)
-          )
-        );
-        res.status(200).send('Stock actualizado correctamente');
-      } catch (error) {
-        console.error('Error al actualizar el stock:', error);
-        res.status(500).send('Error al actualizar el stock');
-      }
-    } else {
-      res.status(200).send('Notificación recibida, pero el pago no está aprobado');
-    }} catch (error) {
-    console.error('Error al procesar el webhook:', error);
-    res.status(500).send('Error al procesar el webhook');
-  }
+  //     try {
+  //       // Actualización del stock de cada producto
+  //       await Promise.all(
+  //         products.map((Product:Product) =>
+  //           updateStock(Product.idProduct, Product.count)
+  //         )
+  //       );
+  //       res.status(200).send('Stock actualizado correctamente');
+  //     } catch (error) {
+  //       console.error('Error al actualizar el stock:', error);
+  //       res.status(500).send('Error al actualizar el stock');
+  //     }
+  //   } else {
+  //     res.status(200).send('Notificación recibida, pero el pago no está aprobado');
+  //   }} catch (error) {
+  //   console.error('Error al procesar el webhook:', error);
+  //   res.status(500).send('Error al procesar el webhook');
+  // }
 };
 
 // updateStock function
