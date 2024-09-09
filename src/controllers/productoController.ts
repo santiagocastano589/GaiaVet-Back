@@ -151,9 +151,9 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
   // try {
     try {
       const payment = req.query; // Aquí recibes la notificación
-  
+      res.status(200).json(payment)
       // Verifica si payment.id es una cadena de caracteres
-      if (typeof payment.id !== 'string') {
+      if (typeof req.query.id !== 'string') {
         res.status(400).json({ error: 'Invalid payment ID' });
         return;
       }
