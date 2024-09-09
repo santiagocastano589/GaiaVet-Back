@@ -148,31 +148,46 @@ export const preferences_ = async (req: Request, res: Response): Promise<void> =
 
 
 export const webhook = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const payment = req.query; // Aquí recibes la notificación
-    // res.status(200).json(payment)
-    const response = await fetch(`https://api.mercadopago.com/v1/payments/${payment.id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
+  // try {
+    try {
+      const payment = req.query; // Aquí recibes la notificación
+  
+      // Verifica si payment.id es una cadena de caracteres
+      if (typeof payment.id !== 'string') {
+        res.status(400).json({ error: 'Invalid payment ID' });
+        return;
       }
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error fetching payment: ${response.statusText}`);
+  
+      // Token de acceso obtenido de Mercado Pago
+      const accessToken = 'APP_USR-8827196264162858-081217-755e5d2b5e722ca8f3c7042df40dbed3-1941685779'; // Reemplaza con tu token de acceso
+  
+      // Realiza la solicitud a la API de Mercado Pago
+      const response = await fetch(`https://api.mercadopago.com/v1/payments/${payment.id}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        }
+      });
+  
+      if (!response.ok) {
+        // Manejo de errores HTTP
+        const errorData = await response.json();
+        throw new Error(`Error fetching payment: ${errorData.message}`);
+      }
+  
+      // Extrae los datos de la respuesta
+      const paymentData = await response.json();
+      
+      // Procesa los datos de pago obtenidos
+      console.log(paymentData);
+  
+      // Responde con el estado HTTP 200 OK y los datos de pago
+      res.status(200).json(paymentData);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
     }
-
-    const paymentData = await response.json();
-    
-    // Procesa los datos de pago obtenidos
-    console.log(paymentData);
-
-    // Responde con el estado HTTP 200 OK y los datos de pago
-    res.status(200).json(paymentData+"1");
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
 
 
     // Puedes validar el tipo de evento recibido
