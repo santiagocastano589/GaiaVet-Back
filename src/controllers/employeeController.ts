@@ -89,7 +89,7 @@ export const getEmployeesById = async (req:Request, res:Response) => {
             res.status(200).json(employee) 
         }
     } catch (error) {
-        res.status(500).json({mesagge:'Error to get employee'})
+        res.status(500).json({mesagge:'Error al obtener el Empleado'})
 
     }
 
