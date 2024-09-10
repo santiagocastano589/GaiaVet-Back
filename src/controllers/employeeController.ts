@@ -69,7 +69,7 @@ export const getAllEmployees = async (req: Request, res: Response) => {
 }
 
 export const getEmployeesServices = async (req: Request, res: Response) => {
-  const cargo = req.body
+  const cargo = req.params
   try {
 
       const employees = await Empleado.findAll({where:cargo})
