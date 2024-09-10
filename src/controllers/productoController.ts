@@ -9,13 +9,13 @@ interface Product {
   price: number;
 }
 
-// Define el tipo de cuerpo de la solicitud
-interface CreatePreferenceRequest extends Request {
-  body: {
-    products: Product[];
-  };
-
+interface Item {
+  id: string;
+  quantity: string;
+  title: string;
+  unit_price: string;
 }
+
 interface Payment {
   data: {
     status: string; 
@@ -148,80 +148,59 @@ export const preferences_ = async (req: Request, res: Response): Promise<void> =
 
 
 export const webhook = async (req: Request, res: Response): Promise<void> => {
-  // try {
-    try {
-      const payment= req.query; // Aquí recibes la notificación
-      // Verifica si payment.id es una cadena de caracteres
-      if (typeof payment.payment_id !== 'string') {
-        res.status(200).json(payment.payment_id)
-        return;
-      }
-  
-      // Token de acceso obtenido de Mercado Pago
-      const accessToken = 'APP_USR-8827196264162858-081217-755e5d2b5e722ca8f3c7042df40dbed3-1941685779'; // Reemplaza con tu token de acceso
-  
-      // Realiza la solicitud a la API de Mercado Pago
-      const response = await fetch(`https://api.mercadopago.com/v1/payments/${payment.payment_id}`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'application/json'
-        }
-      });
-  
-      if (!response.ok) {
-        // Manejo de errores HTTP
-        const errorData = await response.json();
-        throw new Error(`Error fetching payment: ${errorData.message}`);
-      }
-  
-      // Extrae los datos de la respuesta
-      const paymentData = await response.json();
-      
-      // Procesa los datos de pago obtenidos
-      console.log(paymentData);
-  
-      // Responde con el estado HTTP 200 OK y los datos de pago
-      res.status(200).json(paymentData);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
+  try {
+    const payment = req.query;
+    if (typeof payment.payment_id !== 'string') {
+      res.status(200).json(payment.payment_id);
+      return;
     }
 
+ 
+    const accessToken = 'APP_USR-8827196264162858-081217-755e5d2b5e722ca8f3c7042df40dbed3-1941685779';
+ 
+    const response = await fetch(`https://api.mercadopago.com/v1/payments/${payment.payment_id}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
 
-    // Puedes validar el tipo de evento recibido
-  //   if (payment?.type === 'payment' && payment.data?.status === 'approved') {
-  //     const paymentId = payment.data.id;
-  //     console.log(`Pago aprobado con ID: ${paymentId}`);
+    if (!response.ok) {
+      // Manejo de errores HTTP
+      const errorData = await response.json();
+      throw new Error(`Error fetching payment: ${errorData.message}`);
+    }
 
-  //     const products = payment.data.additional_info?.items;
+    const paymentData = await response.json();
 
-  //     if (!products || products.length === 0) {
-  //       res.status(400).send('No se encontraron productos en la notificación.');
-  //       return;
-  //     }
+    console.log(paymentData);
 
-  //     try {
-  //       // Actualización del stock de cada producto
-  //       await Promise.all(
-  //         products.map((Product:Product) =>
-  //           updateStock(Product.idProduct, Product.count)
-  //         )
-  //       );
-  //       res.status(200).send('Stock actualizado correctamente');
-  //     } catch (error) {
-  //       console.error('Error al actualizar el stock:', error);
-  //       res.status(500).send('Error al actualizar el stock');
-  //     }
-  //   } else {
-  //     res.status(200).send('Notificación recibida, pero el pago no está aprobado');
-  //   }} catch (error) {
-  //   console.error('Error al procesar el webhook:', error);
-  //   res.status(500).send('Error al procesar el webhook');
-  // }
+    try {
+      await Promise.all(
+        paymentData.additional_info.items.map(async (item: Item) => {
+          const productId = item.id;
+          const count = parseInt(item.quantity, 10);
+
+          if (isNaN(count) || count < 0) {
+            throw new Error(`Cantidad inválida para el producto ${productId}`);
+          }
+
+          await updateStock(productId, count);
+        })
+      );
+
+      res.status(200).json(paymentData);
+    } catch (error) {
+      console.error('Error al actualizar el stock:', error);
+      res.status(500).json({ error: 'Error al actualizar el stock' });
+    }
+  } catch (error) {
+    console.error('Error en el webhook:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
 
-// updateStock function
 const updateStock = async (productId: string, count: number): Promise<void> => {
   try {
     const product = await Producto.findByPk(productId);
