@@ -171,25 +171,19 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
       const errorData = await response.json();
       throw new Error(`Error fetching payment: ${errorData.message}`);
     }
-
     const paymentData = await response.json();
-
     console.log(paymentData);
-
     try {
       await Promise.all(
         paymentData.additional_info.items.map(async (item: Item) => {
           const productId = item.id;
           const count = parseInt(item.quantity, 10);
-
           if (isNaN(count) || count < 0) {
             throw new Error(`Cantidad inválida para el producto ${productId}`);
           }
-
           await updateStock(productId, count);
         })
       );
-
       res.status(200).json(paymentData);
     } catch (error) {
       console.error('Error al actualizar el stock:', error);

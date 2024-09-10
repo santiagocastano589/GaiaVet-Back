@@ -5,6 +5,8 @@ import { Request, Response } from 'express';
 import Admin from "../models/adminModel";
 import Mascota from "../models/petModel";
 import moment from 'moment-business-days'; 
+import { Op } from "sequelize";
+
 
 
 
@@ -59,25 +61,13 @@ export const newCita = async (req: CustomRequest, res: Response): Promise<void> 
     }
 };
 
-export const getCitasPendientes = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const whereClause: any = {
-        estadoCita: 'Pendiente'
-      };
-        const citasPendientes = await Cita.findAll({
-        where: whereClause
-      });
-  
-      if (citasPendientes.length === 0) {
-        res.status(404).json({ message: 'No se encontraron citas pendientes' });
-        return;
-      }
-      res.status(200).json(citasPendientes);
-    } catch (error) {
-      console.error('Error al obtener las citas pendientes:', error);
-      res.status(500).json({ message: 'Error al obtener las citas pendientes', error });
-    }
+export const getCitas = async (req: Request, res: Response): Promise<void> => {
+  const citasPendientes = await Cita.findAll();
+  if (!citasPendientes) {
+    res.status(404).json('No se encontraron citas')
+  }
   };
+ 
 
   export const getUserAppointment = async (req: CustomRequest, res: Response): Promise<void> => {
     try {
@@ -143,5 +133,37 @@ export const getCitasPendientes = async (req: Request, res: Response): Promise<v
     } catch (error) {
       console.error('Error al actualizar la cita:', error);
       res.status(500).json({ message: 'Error al actualizar la cita', error });
+    }
+  };
+
+
+
+  export const AppointmentDate = async (req: Request, res: Response): Promise<void> => {
+    try {
+      // Obtener la fecha del parámetro en la URL
+      const { fecha } = req.params;
+
+  res.status(200).json(fecha.toString + "Jola")      // Convertir la fecha a un objeto Date
+      // const date = new Date(fecha);
+  
+      // // Asegurarse de que la fecha es válida
+      // if (isNaN(date.getTime())) {
+      //   res.status(400).json({ error: 'Fecha inválida.' });
+      //   return;
+      // }
+  
+      // // Buscar citas para la fecha dada (solo el día específico)
+      // const citas = await Cita.findAll({
+      //   where: {
+      //     fechaHoraCita: {
+      //       [Op.eq]: date // Filtrar citas en la fecha exacta
+      //     }
+      //   }
+      // });
+  
+      // res.status(200).json(citas);
+    } catch (error) {
+      console.error('Error al obtener citas:', error);
+      res.status(500).json({ error: 'Error al obtener citas' });
     }
   };
