@@ -11,7 +11,6 @@ router.put('/updateStatusAppointment',authenticate,accessRole(['administrador','
 router.get('/getPendingAppointment',authenticate,accessRole(['administrador','empleado']),getCitas)
 router.get('/getUserAppointment',authenticate,accessRole(['User']),getUserAppointment)
 router.get('/Appointments/:fecha',authenticate,accessRole(['empleado','administrador']),AppointmentDate)
-
 router.get('/GetAppointments/:fecha',authenticate,accessRole(['User','empleado','administrador']),GetAppointmentDate)
 
 
