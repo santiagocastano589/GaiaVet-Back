@@ -59,7 +59,7 @@ export const getAllPet = async (req: Request, res: Response): Promise<void> => {
   
       const fk_cedulaU = user.cedula.toString();
   
-      const pets = await Mascota.findAll({ where: { fk_cedulaU: fk_cedulaU,Estado:true }  });
+      const pets = await Mascota.findAll({ where: { fk_cedulaU: fk_cedulaU,Estado:true}  });
   
       if (pets.length > 0) {
         res.status(200).json(pets);

@@ -137,31 +137,62 @@ export const getCitas = async (req: Request, res: Response): Promise<void> => {
   };
 
 
-
   export const AppointmentDate = async (req: Request, res: Response): Promise<void> => {
     try {
-      // Obtener la fecha del parámetro en la URL
       const { fecha } = req.params;
+      
+      const fechaConsulta = new Date(fecha);
+      
+      if (isNaN(fechaConsulta.getTime())) {
+        res.status(400).json({ error: 'Fecha inválida.' });
+        return;
+      }
+      
+      const citas = await Cita.findAll();
+      
+      const fechaStr = fechaConsulta.toISOString().split('T')[0];
+      const citasFiltradas = citas.filter(cita => cita.fechaHoraCita.toISOString().split('T')[0] === fechaStr);
+      
+      res.status(200).json(citasFiltradas);
+    } catch (error) {
+      console.error('Error al obtener citas:', error);
+      res.status(500).json({ error: 'Error al obtener citas' });
+    }
+  };
 
-  res.status(200).json(fecha.toString + "Jola")      // Convertir la fecha a un objeto Date
-      // const date = new Date(fecha);
+  export const GetAppointmentDate = async (req: Request, res: Response): Promise<void> => {
+    try {
+      // Obtén la fecha desde los parámetros de la solicitud
+      const { fecha } = req.params;
   
-      // // Asegurarse de que la fecha es válida
-      // if (isNaN(date.getTime())) {
-      //   res.status(400).json({ error: 'Fecha inválida.' });
-      //   return;
-      // }
+      // Convierte la fecha proporcionada en un objeto Date
+      const fechaConsulta = new Date(fecha);
   
-      // // Buscar citas para la fecha dada (solo el día específico)
-      // const citas = await Cita.findAll({
-      //   where: {
-      //     fechaHoraCita: {
-      //       [Op.eq]: date // Filtrar citas en la fecha exacta
-      //     }
-      //   }
-      // });
+      // Verifica si la fecha es válida
+      if (isNaN(fechaConsulta.getTime())) {
+        res.status(400).json({ error: 'Fecha inválida.' });
+        return;
+      }
   
-      // res.status(200).json(citas);
+      // Obtén todas las citas
+      const citas = await Cita.findAll();
+  
+      // Convierte la fecha proporcionada a una cadena en formato YYYY-MM-DD
+      const fechaStr = fechaConsulta.toISOString().split('T')[0];
+  
+      // Filtra las citas para obtener solo las que coinciden con la fecha proporcionada
+      const citasFiltradas = citas
+        .filter(cita => cita.fechaHoraCita.toISOString().split('T')[0] === fechaStr)
+        .map(cita => {
+          const hora = cita.fechaHoraCita.toISOString().split('T')[1].split('Z')[0]; // Obtén la hora en formato HH:mm:ss
+          return {
+            fecha: fechaStr,
+            hora
+          };
+        });
+  
+      // Devuelve las citas filtradas con la hora
+      res.status(200).json(citasFiltradas);
     } catch (error) {
       console.error('Error al obtener citas:', error);
       res.status(500).json({ error: 'Error al obtener citas' });
