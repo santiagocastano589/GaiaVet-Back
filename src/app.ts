@@ -15,7 +15,8 @@ import Cita from './models/citaModel';
 import Producto from './models/productoModel';
 import productRoutes from "./routes/productRoutes";
 import  sendEmailRoutes from './routes/sendEmailRoutes';
-import iaRoutes from './routes/IaRoutes'
+import iaRoutes from './routes/iaRoutes'
+import { contactInfo } from './controllers/contactInfoController';
 
 
 User.initModel();
@@ -49,6 +50,7 @@ app.use('/',appointmentRoutes)
 app.use('/',productRoutes)
 app.use('/',sendEmailRoutes)
 app.use('/',iaRoutes)
+app.use('/',contactInfo)
 
 app.listen(port, () => {
   async function testConnection() {

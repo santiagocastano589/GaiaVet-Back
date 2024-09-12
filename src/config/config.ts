@@ -32,9 +32,7 @@ const START_CHAT: ChatEntry[] = [
   {
     role: "user",
     parts: [
-      { text: ` hola:Hola! bienvenido  gaiavet esperamos tengas una experiencia agradable
-        
-        Nombre de la Empresa: Gaiavet
+      { text: ` Nombre de la Empresa: Gaiavet
   
       Misión: La mision de Gaiavet, es automatizar y mejorar el sistema de las veterinarias al momento de crear citas y/o vender sus productos
       
