@@ -6,8 +6,8 @@ import { newCita,updateCitaEstado,getCitas, getUserAppointment, updateCita, Appo
 const router = Router()
 
 router.post('/newAppointment',authenticate,accessRole(['User','administrador','empleado']),newCita);
-router.post('/updateDate',authenticate,accessRole(['User','administrador','empleado']),updateCita);
-router.put('/updateStatusAppointment',authenticate,updateCitaEstado)
+router.post('/updateDate/:id',authenticate,accessRole(['User','administrador','empleado']),updateCita);
+router.put('/updateStatusAppointment/:id',authenticate,updateCitaEstado)
 router.get('/getPendingAppointment',authenticate,accessRole(['administrador','empleado']),getCitas)
 router.get('/getUserAppointment',authenticate,accessRole(['User']),getUserAppointment)
 router.get('/Appointments/:fecha',authenticate,accessRole(['empleado','administrador']),AppointmentDate)

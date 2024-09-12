@@ -109,7 +109,7 @@ export const getCitas = async (req: Request, res: Response): Promise<void> => {
     }
   };
   export const updateCita = async (req: CustomRequest, res: Response): Promise<void> => {
-    const { idCita } = req.body;
+    const { idCita } = req.params;
     const { fechaHoraCita } = req.body;
   
     try {
