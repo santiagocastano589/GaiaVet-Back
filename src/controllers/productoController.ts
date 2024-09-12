@@ -176,8 +176,12 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
       throw new Error(`Error fetching payment: ${errorData.message}`);
     }
     const paymentData = await response.json();
+    try {
+      await createFactura(paymentData.identification.number,paymentData.transaction.amount,paymentData.additional_info.items)
+    } catch (error) {
+      res.status(500).json(error)
+    }
     console.log(paymentData);
-    await createFactura(paymentData.identification.number,paymentData.transaction.amount,paymentData.additional_info.items)
     try {
       await Promise.all(
         paymentData.additional_info.items.map(async (item: Item) => {
