@@ -2,8 +2,10 @@ import { Request, response, Response } from 'express';
 import Producto from '../models/productoModel';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
 
+
 import { error } from 'console';
 import DetalleFactura from '../models/detalleFacturaModel';
+import fCompra from '../models/FacturaCompraModel';
 interface Product {
   idProduct: string;
   count: number;
@@ -175,6 +177,7 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
     }
     const paymentData = await response.json();
     console.log(paymentData);
+    createFactura(paymentData.identification.number,paymentData.transaction.amount,paymentData.additional_info.items)
     try {
       await Promise.all(
         paymentData.additional_info.items.map(async (item: Item) => {
@@ -219,5 +222,42 @@ const updateStock = async (productId: string, count: number): Promise<void> => {
     throw error; // Re-throw error for potential handling in the calling function
   }
 };
+export const createFactura = async (
+  fk_cedula: string, 
+  total: number,
+  items: Array<{ id: number, quantity: number, unit_price: number }>
+): Promise<{ message: string, factura?: any, error?: any }> => {
+  
+  try {
+    // 1. Crear la factura (Sequelize generará automáticamente el idFacturaC)
+    const nuevaFactura = await fCompra.create({
+      fk_cedula,               // Cédula del cliente
+      fecha: new Date(),       // Fecha de la compra
+      total                    // Total de la compra
+    });
 
+    const facturaId = nuevaFactura.idFacturaC;  // Obtienes el id generado automáticamente
 
+    // 2. Recorrer los productos y almacenarlos en detalleFactura
+    for (const item of items) {
+      await DetalleFactura.create({
+        fk_idFacturaC: facturaId,      // ID de la factura creada
+        fk_idProducto: item.id,        // ID del producto
+        cantidad: item.quantity,       // Cantidad del producto comprado
+        precioUnitario: item.unit_price // Precio unitario del producto
+      });
+    }
+
+    // 3. Retornar mensaje de éxito y la factura creada
+    return {
+      message: 'Factura y productos guardados exitosamente',
+      factura: nuevaFactura,
+    };
+  } catch (error) {
+    console.error('Error al guardar la factura y productos:', error);
+    return {
+      message: 'Error al guardar la factura y productos',
+      error,
+    };
+  }
+};

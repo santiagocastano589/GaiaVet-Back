@@ -2,9 +2,9 @@ import { DataTypes, Model } from 'sequelize';
 import sequelize from '../db/connection';
 
 interface fCompraAttributes {
-  idFacturaC: number;
+  idFacturaC?: number;
   fecha: Date;
-  subtotal: number;
+  subtotal?: number;
   total:number,
   fk_cedula: string;
 }
@@ -30,7 +30,7 @@ class fCompra extends Model<fCompraAttributes> implements fCompraAttributes {
         },
         subtotal: {
           type: DataTypes.DECIMAL(10, 2),
-          allowNull: false,
+          allowNull: true,
         }, 
         total: {
             type: DataTypes.DECIMAL(10, 2),

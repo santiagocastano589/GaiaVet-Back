@@ -2,7 +2,7 @@ import { DataTypes, Model } from 'sequelize';
 import sequelize from '../db/connection';
 
 interface DetalleFacturaAttributes {
-  idDetalle: number;
+  idDetalle?: number;
   fk_idFacturaC: number;
   fk_idProducto: number;
   cantidad: number;
