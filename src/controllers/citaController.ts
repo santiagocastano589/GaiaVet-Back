@@ -66,6 +66,8 @@ export const getCitas = async (req: Request, res: Response): Promise<void> => {
   if (!citasPendientes) {
     res.status(404).json('No se encontraron citas')
   }
+  res.status(200).json(citasPendientes)
+
   };
  
 

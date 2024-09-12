@@ -1,7 +1,9 @@
 import { Request, response, Response } from 'express';
 import Producto from '../models/productoModel';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
+
 import { error } from 'console';
+import DetalleFactura from '../models/detalleFacturaModel';
 interface Product {
   idProduct: string;
   count: number;
@@ -217,3 +219,5 @@ const updateStock = async (productId: string, count: number): Promise<void> => {
     throw error; // Re-throw error for potential handling in the calling function
   }
 };
+
+
