@@ -7,7 +7,7 @@ const router = Router()
 
 router.post('/newAppointment',authenticate,accessRole(['User','administrador','empleado']),newCita);
 router.post('/updateDate',authenticate,accessRole(['User','administrador','empleado']),updateCita);
-router.put('/updateStatusAppointment',authenticate,accessRole(['administrador','empleado']),updateCitaEstado)
+router.put('/updateStatusAppointment',authenticate,updateCitaEstado)
 router.get('/getPendingAppointment',authenticate,accessRole(['administrador','empleado']),getCitas)
 router.get('/getUserAppointment',authenticate,accessRole(['User']),getUserAppointment)
 router.get('/Appointments/:fecha',authenticate,accessRole(['empleado','administrador']),AppointmentDate)
