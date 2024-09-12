@@ -177,8 +177,7 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
     }
     const paymentData = await response.json();
     try {
-      res.status(200).json(paymentData.card.cardholder.identification.number)
-      //await createFactura(paymentData.identification.number,paymentData.transaction.amount,paymentData.additional_info.items)
+      await createFactura(paymentData.card.cardholder.identification.number,paymentData.transaction.amount,paymentData.additional_info.items)
     } catch (error) {
       res.status(500).json(error)
     }
