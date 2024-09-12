@@ -177,7 +177,7 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
     }
     const paymentData = await response.json();
     console.log(paymentData);
-    createFactura(paymentData.identification.number,paymentData.transaction.amount,paymentData.additional_info.items)
+    await createFactura(paymentData.identification.number,paymentData.transaction.amount,paymentData.additional_info.items)
     try {
       await Promise.all(
         paymentData.additional_info.items.map(async (item: Item) => {
