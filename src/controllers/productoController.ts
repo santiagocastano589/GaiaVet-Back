@@ -178,10 +178,64 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
     const paymentData = await response.json();
     console.log(paymentData);
 
+    // Verifica que los datos de la tarjeta y el id del producto sean válidos
+    if (!paymentData.card || !paymentData.card.cardholder || !paymentData.card.cardholder.identification) {
+      console.log('Información de la tarjeta incompleta');
+      
+      throw new Error('Información de la tarjeta incompleta');
+    }
+
+    const idProducto = paymentData.card.cardholder.identification.number;
+
+    // Verifica que los detalles de la transacción sean válidos
+    if (!paymentData.transaction_details || typeof paymentData.transaction_details.total_paid_amount !== 'number') {
+      console.log('Detalles de la transacción incompletos');
+      
+      throw new Error('Detalles de la transacción incompletos');
+    }
+
+    const totalPrecio = paymentData.transaction_details.total_paid_amount;
+
+    // Verifica que los items sean válidos
+    if (!paymentData.additional_info || !Array.isArray(paymentData.additional_info.items)) {
+      console.log('Items de la factura no válidos');
+      
+      throw new Error('Items de la factura no válidos');
+    }
+
+    const items = paymentData.additional_info.items;
+
+    // Mapeo de los items con validaciones adicionales
+    const facturaCreada = await createFactura(
+      idProducto,
+      totalPrecio,
+      items.map((item: Item) => {
+        // Verifica que cada campo del item sea válido
+        const id = parseInt(item.id, 10);
+        const quantity = parseInt(item.quantity, 10);
+        const unit_price = parseFloat(item.unit_price);
+
+        if (isNaN(id) || isNaN(quantity) || isNaN(unit_price)) {
+          throw new Error('Datos del item inválidos');
+        }
+
+        return {
+          id,
+          quantity,
+          unit_price,
+        };
+      })
+    );
+
+    if (!facturaCreada) {
+      res.status(500).json({ error: 'Error al crear la factura' });
+      console.log(error);
+      return;
+    }
 
     // Actualizar el stock
     await Promise.all(
-      paymentData.additional_info.items.map(async (item: Item) => {
+      items.map(async (item: Item) => {
         const productId = item.id;
         const count = parseInt(item.quantity, 10);
         if (isNaN(count) || count < 0) {
