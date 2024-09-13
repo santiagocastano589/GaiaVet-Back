@@ -127,9 +127,9 @@ export const preferences_ = async (req: Request, res: Response): Promise<void> =
         currency_id: "COP",
       })),
       back_urls: {
-        success: "https://gaia-vet-front-two.vercel.app/products",
-        failure: "https://gaia-vet-front-two.vercel.app/products",
-        pending: "https://gaia-vet-front-two.vercel.app/products",
+        success: "https://gaiavet-back.onrender.com/webhook",
+        failure: "https://gaiavet-back.onrender.com/webhook",
+        pending: "https://gaiavet-back.onrender.com/webhook",
       },
       auto_return: "approved",
       notification_url: "https://gaiavet-back.onrender.com/webhook"// URL del webhook
@@ -180,7 +180,8 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
 
     const paymentData = await response.json();
     console.log(paymentData);
-    /*
+    const items = paymentData.additional_info.items;
+
 
     // Verifica que los datos de la tarjeta y el id del producto sean válidos
     if (!paymentData.card || !paymentData.card.cardholder || !paymentData.card.cardholder.identification) {
@@ -214,28 +215,14 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
       idProducto,
       totalPrecio,
       fechaa,
-      items.map((item: Item) => {
-        const id = parseInt(item.id, 10);
-        const quantity = parseInt(item.quantity, 10);
-        const unit_price = parseFloat(item.unit_price);
-
-        if (isNaN(id) || isNaN(quantity) || isNaN(unit_price)) {
-          throw new Error('Datos del item inválidos');
-        }
-        return {
-          id,
-          quantity,
-          unit_price,
-        };
-      }),
+      items
       
     );
 
     if (!facturaCreada) {
       console.log(error);
       return;
-    }*/
-      const items = paymentData.additional_info.items;
+    }
 
     // Actualizar el stock
     await Promise.all(
