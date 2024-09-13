@@ -206,7 +206,6 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
 
     const items = paymentData.additional_info.items;
     const fechaa = paymentData.money_release_date
-    res.status(500).json({ fechaa});
 
     // Mapeo de los items con validaciones adicionales
     const facturaCreada = await createFactura(
@@ -247,7 +246,6 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
       })
     );
 
-    // Responder con los datos del pago
     res.status(200).json(paymentData);
 
   } catch (error) {
