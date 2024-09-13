@@ -177,27 +177,7 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
 
     const paymentData = await response.json();
     console.log(paymentData);
-    
-    const  idProducto =paymentData.card.cardholder.identification.number;
-    const totalPrecio = paymentData.transaction_details.total_paid_amount;
-    const  items = paymentData.additional_info.items
 
-
-    
-    const facturaCreada = await createFactura(
-      idProducto,totalPrecio,items.map((item:Item) => ({
-        id: parseInt(item.id, 10),
-        quantity: parseInt(item.quantity, 10),
-        unit_price: parseFloat(item.unit_price),
-      }))
-    );
-
-    if (!facturaCreada) {
-      res.status(500).json({ error: 'Error al crear la factura' });
-      console.log(error);
-      
-      return;
-    }
 
     // Actualizar el stock
     await Promise.all(
