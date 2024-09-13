@@ -127,9 +127,9 @@ export const preferences_ = async (req: Request, res: Response): Promise<void> =
         currency_id: "COP",
       })),
       back_urls: {
-        success: "https://gaiavet-back.onrender.com/webhook",
-        failure: "https://gaiavet-back.onrender.com/webhook",
-        pending: "https://gaiavet-back.onrender.com/webhook",
+        success: "https://gaia-vet-front-two.vercel.app/products",
+        failure: "https://gaia-vet-front-two.vercel.app/products",
+        pending: "https://gaia-vet-front-two.vercel.app/products",
       },
       notification_url: "https://gaiavet-back.onrender.com/webhook", // URL del webhook
       auto_return: "approved",
@@ -178,6 +178,7 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
 
     const paymentData = await response.json();
     console.log(paymentData);
+    /*
 
     // Verifica que los datos de la tarjeta y el id del producto sean válidos
     if (!paymentData.card || !paymentData.card.cardholder || !paymentData.card.cardholder.identification) {
@@ -204,7 +205,6 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
       throw new Error('Items de la factura no válidos');
     }
 
-    const items = paymentData.additional_info.items;
     const fechaa = paymentData.money_release_date
 
     // Mapeo de los items con validaciones adicionales
@@ -232,7 +232,8 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
     if (!facturaCreada) {
       console.log(error);
       return;
-    }
+    }*/
+      const items = paymentData.additional_info.items;
 
     // Actualizar el stock
     await Promise.all(
