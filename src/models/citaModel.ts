@@ -4,7 +4,8 @@ import sequelize from '../db/connection';
 interface CitaAttributes {
   idCita: number;
   tipoCita: string;
-  fechaHoraCita: Date;
+  fecha: Date;
+  hora:String
   tipoMascota: string;
   estadoCita?: string;
   fk_id_mascota?: number;
@@ -15,7 +16,8 @@ interface CitaAttributes {
 class Cita extends Model<CitaAttributes> implements CitaAttributes {
   public idCita!: number;
   public tipoCita!: string;
-  public fechaHoraCita!: Date;
+  public fecha!: Date;
+  public hora!:String;  
   public tipoMascota!: string;
   public estadoCita!: string;
   public fk_id_mascota!: number;
@@ -34,9 +36,13 @@ class Cita extends Model<CitaAttributes> implements CitaAttributes {
           type: DataTypes.STRING(30),
           allowNull: false,
         },
-        fechaHoraCita: {
+        fecha: {
           type: DataTypes.DATE,
           allowNull: false,
+        },
+        hora:{
+          type:DataTypes.STRING,
+          allowNull: false
         },
         tipoMascota: {
           type: DataTypes.STRING(30),
