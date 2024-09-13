@@ -3,7 +3,7 @@ import sequelize from '../db/connection';
 
 interface fCompraAttributes {
   idFacturaC?: number;
-  fecha: Date;
+  fecha: String;
   subtotal?: number;
   total:number,
   fk_cedula: string;
@@ -11,7 +11,7 @@ interface fCompraAttributes {
 
 class fCompra extends Model<fCompraAttributes> implements fCompraAttributes {
   public idFacturaC!: number;  // Auto-incrementable en la base de datos
-  public fecha!: Date;
+  public fecha!: String;
   public subtotal!: number;
   public total!: number;
   public fk_cedula!: string;

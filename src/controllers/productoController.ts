@@ -6,6 +6,7 @@ import { MercadoPagoConfig, Preference } from 'mercadopago';
 import { error, log } from 'console';
 import DetalleFactura from '../models/detalleFacturaModel';
 import fCompra from '../models/FacturaCompraModel';
+import { DATE } from 'sequelize';
 interface Product {
   idProduct: string;
   count: number;
@@ -204,6 +205,7 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
     }
 
     const items = paymentData.additional_info.items;
+    const fechaa = paymentData.money_release_date
 
     // Mapeo de los items con validaciones adicionales
     const facturaCreada = await createFactura(
@@ -218,13 +220,13 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
         if (isNaN(id) || isNaN(quantity) || isNaN(unit_price)) {
           throw new Error('Datos del item inválidos');
         }
-
         return {
           id,
           quantity,
           unit_price,
         };
-      })
+      }),
+      fechaa
     );
 
     if (!facturaCreada) {
@@ -253,6 +255,8 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+//  money_release_date: '2024-09-13T10:09:27.000-04:00',
+
 
 const updateStock = async (productId: string, count: number): Promise<void> => {
   try {
@@ -279,16 +283,20 @@ const updateStock = async (productId: string, count: number): Promise<void> => {
 export const createFactura = async (
   fk_cedula: string,
   total: number,
-  items: Array<{ id: number, quantity: number, unit_price: number }>
+  items: Array<{ id: number, quantity: number, unit_price: number }>,
+  fecha: String
 ): Promise<boolean> => {
   try {
     if (!fk_cedula || !total || items.length === 0) {
   console.log('Datos incompletos para la factura');
 }
+  
+  const fechaSr = fecha.toString().split('T')[0]; // convierte a YYYY-MM-DD
+
 
     const nuevaFactura = await fCompra.create({
       fk_cedula,
-      fecha: new Date(),
+      fecha: fechaSr,
       total,
     });
 
