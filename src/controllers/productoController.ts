@@ -178,13 +178,14 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
     const paymentData = await response.json();
     console.log(paymentData);
     
+    const  idProducto =paymentData.card.cardholder.identification.number;
+    const totalPrecio = paymentData.transaction_details.total_paid_amount;
+    const  items = paymentData.additional_info.items
 
-    // Crear la factura
+
     
     const facturaCreada = await createFactura(
-      paymentData.card.cardholder.identification.number,
-      paymentData.transaction_details.total_paid_amount,
-      paymentData.additional_info.items.map((item:Item) => ({
+      idProducto,totalPrecio,items.map((item:Item) => ({
         id: parseInt(item.id, 10),
         quantity: parseInt(item.quantity, 10),
         unit_price: parseFloat(item.unit_price),
@@ -247,6 +248,10 @@ export const createFactura = async (
   items: Array<{ id: number, quantity: number, unit_price: number }>
 ): Promise<boolean> => {
   try {
+    if (!fk_cedula || !total || items.length === 0) {
+  console.log('Datos incompletos para la factura');
+}
+
     const nuevaFactura = await fCompra.create({
       fk_cedula,
       fecha: new Date(),
