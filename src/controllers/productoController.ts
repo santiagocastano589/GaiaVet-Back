@@ -154,14 +154,14 @@ export const preferences_ = async (req: Request, res: Response): Promise<void> =
 export const webhook = async (req: Request, res: Response): Promise<void> => {
   try {
     const payment = req.query;
+
+    // Verifica que el payment_id sea una cadena
     if (typeof payment.payment_id !== 'string') {
-      res.status(200).json(payment.payment_id);
+      res.status(400).json({ error: 'Payment ID inválido' });
       return;
     }
 
- 
     const accessToken = 'APP_USR-8827196264162858-081217-755e5d2b5e722ca8f3c7042df40dbed3-1941685779';
- 
     const response = await fetch(`https://api.mercadopago.com/v1/payments/${payment.payment_id}`, {
       method: 'GET',
       headers: {
@@ -171,35 +171,44 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
     });
 
     if (!response.ok) {
-      // Manejo de errores HTTP
       const errorData = await response.json();
       throw new Error(`Error fetching payment: ${errorData.message}`);
     }
-    const paymentData = await response.json();
-    try {
-      res.status(500).json([paymentData.card.cardholder.identification.number,paymentData.transaction_details.total_paid_amount,paymentData.additional_info.items])
 
-      //await createFactura(paymentData.card.cardholder.identification.number,paymentData.transaction_details.total_paid_amount,paymentData.additional_info.items)
-    } catch (error) {
-      res.status(200).json({message:'NO funca'})
+    const paymentData = await response.json();
+
+    // Crear la factura
+    
+    const facturaCreada = await createFactura(
+      paymentData.card.cardholder.identification.number,
+      paymentData.transaction_details.total_paid_amount,
+      paymentData.additional_info.items.map((item:Item) => ({
+        id: parseInt(item.id, 10),
+        quantity: parseInt(item.quantity, 10),
+        unit_price: parseFloat(item.unit_price),
+      }))
+    );
+
+    if (!facturaCreada) {
+      res.status(500).json({ error: 'Error al crear la factura' });
+      return;
     }
-    console.log(paymentData);
-    try {
-      await Promise.all(
-        paymentData.additional_info.items.map(async (item: Item) => {
-          const productId = item.id;
-          const count = parseInt(item.quantity, 10);
-          if (isNaN(count) || count < 0) {
-            throw new Error(`Cantidad inválida para el producto ${productId}`);
-          }
-          await updateStock(productId, count);
-        })
-      );
-      res.status(200).json(paymentData);
-    } catch (error) {
-      console.error('Error al actualizar el stock:', error);
-      res.status(500).json({ error: 'Error al actualizar el stock' });
-    }
+
+    // Actualizar el stock
+    await Promise.all(
+      paymentData.additional_info.items.map(async (item: Item) => {
+        const productId = item.id;
+        const count = parseInt(item.quantity, 10);
+        if (isNaN(count) || count < 0) {
+          throw new Error(`Cantidad inválida para el producto ${productId}`);
+        }
+        await updateStock(productId, count);
+      })
+    );
+
+    // Responder con los datos del pago
+    res.status(200).json(paymentData);
+
   } catch (error) {
     console.error('Error en el webhook:', error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -221,43 +230,39 @@ const updateStock = async (productId: string, count: number): Promise<void> => {
     }
 
     product.stock = Math.max(0, product.stock || 0) - count; // Ensure stock doesn't go negative
-
     await product.save();
   } catch (error) {
     console.error(`Error al actualizar el stock del producto ${productId}:`, error);
     throw error; // Re-throw error for potential handling in the calling function
   }
 };
-export const createFactura = async ( fk_cedula: string,  total: number,  items: Array<{ id: number, quantity: number, unit_price: number }>
-): Promise<Boolean> => {
-  
+
+export const createFactura = async (
+  fk_cedula: string,
+  total: number,
+  items: Array<{ id: number, quantity: number, unit_price: number }>
+): Promise<boolean> => {
   try {
     const nuevaFactura = await fCompra.create({
-      fk_cedula,               // Cédula del cliente
-      fecha: new Date(),       // Fecha de la compra
-      total                    // Total de la compra
+      fk_cedula,
+      fecha: new Date(),
+      total,
     });
 
-    const facturaId = nuevaFactura.idFacturaC;  // Obtienes el id generado automáticamente
+    const facturaId = nuevaFactura.idFacturaC;
 
-    // 2. Recorrer los productos y almacenarlos en detalleFactura
     for (const item of items) {
       await DetalleFactura.create({
-        fk_idFacturaC: facturaId,      // ID de la factura creada
-        fk_idProducto: item.id,        // ID del producto
-        cantidad: item.quantity,       // Cantidad del producto comprado
-        precioUnitario: item.unit_price // Precio unitario del producto
+        fk_idFacturaC: facturaId,
+        fk_idProducto: item.id,
+        cantidad: item.quantity,
+        precioUnitario: item.unit_price,
       });
     }
 
-    // 3. Retornar mensaje de éxito y la factura creada
-    return  true
-
-    
+    return true;
   } catch (error) {
-    console.log(error);
-    
-    return false     
-     
+    console.error('Error al crear la factura:', error);
+    return false;
   }
 };
