@@ -18,7 +18,7 @@ export const newCita = async (req: CustomRequest, res: Response): Promise<void> 
       return;
     }
 
-    const { idCita,tipoCita, fechaHoraCita, tipoMascota, estadoCita,fk_id_mascota, fk_cc_Empleado } = req.body;
+    const { idCita,tipoCita, fecha,hora, tipoMascota, estadoCita,fk_id_mascota, fk_cc_Empleado } = req.body;
 
     try {
         const admin = await Admin.findByPk(159753);
@@ -28,7 +28,7 @@ export const newCita = async (req: CustomRequest, res: Response): Promise<void> 
         }
         const fk_nit = admin?.nit
 
-        const cita = await Cita.create({ idCita,tipoCita, fechaHoraCita, tipoMascota, estadoCita, fk_id_mascota, fk_nit, fk_cc_Empleado });
+        const cita = await Cita.create({ idCita,tipoCita, fecha,hora, tipoMascota, estadoCita, fk_id_mascota, fk_nit, fk_cc_Empleado });
         res.status(201).json(cita);
     } catch (error) {
         console.error('Error al crear la cita:', error);
@@ -128,7 +128,7 @@ export const getCitas = async (req: Request, res: Response): Promise<void> => {
         });
         return;
       }
-        cita.fechaHoraCita = nuevaFecha.toDate();
+        cita.fecha = nuevaFecha.toDate();
       await cita.save();
   
       res.status(200).json({ message: 'Fecha de la cita actualizada correctamente', cita });
@@ -139,28 +139,7 @@ export const getCitas = async (req: Request, res: Response): Promise<void> => {
   };
 
 
-  export const AppointmentDate = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const { fecha } = req.params;
-      
-      const fechaConsulta = new Date(fecha);
-      
-      if (isNaN(fechaConsulta.getTime())) {
-        res.status(400).json({ error: 'Fecha inválida.' });
-        return;
-      }
-      
-      const citas = await Cita.findAll();
-      
-      const fechaStr = fechaConsulta.toISOString().split('T')[0];
-      const citasFiltradas = citas.filter(cita => cita.fechaHoraCita.toISOString().split('T')[0] === fechaStr);
-      
-      res.status(200).json(citasFiltradas);
-    } catch (error) {
-      console.error('Error al obtener citas:', error);
-      res.status(500).json({ error: 'Error al obtener citas' });
-    }
-  };
+ 
 
   export const GetAppointmentDate = async (req: Request, res: Response): Promise<void> => {
     try {
