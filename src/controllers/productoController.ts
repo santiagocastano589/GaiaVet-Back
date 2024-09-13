@@ -236,7 +236,7 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
       })
     );
 
-    res.status(200).json(paymentData);
+    res.status(200).json({message:"Compra Exitosa!!"});
 
   } catch (error) {
     console.error('Error en el webhook:', error);
