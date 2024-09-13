@@ -212,8 +212,8 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
     const facturaCreada = await createFactura(
       idProducto,
       totalPrecio,
+      fechaa,
       items.map((item: Item) => {
-        // Verifica que cada campo del item sea válido
         const id = parseInt(item.id, 10);
         const quantity = parseInt(item.quantity, 10);
         const unit_price = parseFloat(item.unit_price);
@@ -227,7 +227,7 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
           unit_price,
         };
       }),
-      fechaa
+      
     );
 
     if (!facturaCreada) {
@@ -283,8 +283,8 @@ const updateStock = async (productId: string, count: number): Promise<void> => {
 export const createFactura = async (
   fk_cedula: string,
   total: number,
+  fecha: String,
   items: Array<{ id: number, quantity: number, unit_price: number }>,
-  fecha: String
 ): Promise<boolean> => {
   try {
     if (!fk_cedula || !total || items.length === 0) {

@@ -25,7 +25,7 @@ class fCompra extends Model<fCompraAttributes> implements fCompraAttributes {
           autoIncrement: true,  // Auto-incrementable
         },
         fecha: {
-          type: DataTypes.DATE,
+          type: DataTypes.STRING,
           allowNull: false,
         },
         subtotal: {
