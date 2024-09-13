@@ -177,11 +177,11 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
     }
     const paymentData = await response.json();
     try {
-      res.status(500).json([paymentData.card.cardholder.identification.number,paymentData.transaction_details.total_paid_amount,paymentData.additional_info.items])
+      //res.status(500).json([paymentData.card.cardholder.identification.number,paymentData.transaction_details.total_paid_amount,paymentData.additional_info.items])
 
-      //await createFactura(paymentData.card.cardholder.identification.number,paymentData.transaction_details.total_paid_amount,paymentData.additional_info.items)
+      await createFactura(paymentData.card.cardholder.identification.number,paymentData.transaction_details.total_paid_amount,paymentData.additional_info.items)
     } catch (error) {
-      res.status(200).json([paymentData.card.cardholder.identification.number,paymentData.transaction_details.total_paid_amount,paymentData.additional_info.items])
+      res.status(200).json({message:'NO funca'})
     }
     console.log(paymentData);
     try {
@@ -228,11 +228,10 @@ const updateStock = async (productId: string, count: number): Promise<void> => {
     throw error; // Re-throw error for potential handling in the calling function
   }
 };
-export const createFactura = async ( res:Response, fk_cedula: string,  total: number,  items: Array<{ id: number, quantity: number, unit_price: number }>
-): Promise<void> => {
+export const createFactura = async ( fk_cedula: string,  total: number,  items: Array<{ id: number, quantity: number, unit_price: number }>
+): Promise<Boolean> => {
   
   try {
-    // 1. Crear la factura (Sequelize generará automáticamente el idFacturaC)
     const nuevaFactura = await fCompra.create({
       fk_cedula,               // Cédula del cliente
       fecha: new Date(),       // Fecha de la compra
@@ -252,12 +251,11 @@ export const createFactura = async ( res:Response, fk_cedula: string,  total: nu
     }
 
     // 3. Retornar mensaje de éxito y la factura creada
-    res.status(200).json({message:'Factura y productos guardados exitosamente'})
-    return 
+    return  true
+
     
   } catch (error) {
-    res.status(200).json({      message: 'Error al guardar la factura y productos',
-    })
-    return 
+    return false     
+     
   }
 };
