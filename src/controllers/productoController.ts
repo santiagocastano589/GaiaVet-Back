@@ -131,8 +131,9 @@ export const preferences_ = async (req: Request, res: Response): Promise<void> =
         failure: "https://gaia-vet-front-two.vercel.app/products",
         pending: "https://gaia-vet-front-two.vercel.app/products",
       },
-      notification_url: "https://gaiavet-back.onrender.com/webhook", // URL del webhook
       auto_return: "approved",
+      notification_url: "https://gaiavet-back.onrender.com/webhook", // URL del webhook
+
     };
 
     const preference = new Preference(client);
