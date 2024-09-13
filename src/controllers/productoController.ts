@@ -180,9 +180,9 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
 
     const paymentData = await response.json();
     console.log(paymentData);
-    const items = paymentData.additional_info.items;
+    const items = await paymentData.additional_info.items;
 
-/*
+
     // Verifica que los datos de la tarjeta y el id del producto sean válidos
     if (!paymentData.card || !paymentData.card.cardholder || !paymentData.card.cardholder.identification) {
       console.log('Información de la tarjeta incompleta');
@@ -190,7 +190,7 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
       throw new Error('Información de la tarjeta incompleta');
     }
 
-    const idProducto = paymentData.card.cardholder.identification.number;
+    const idProducto = await paymentData.card.cardholder.identification.number;
 
     // Verifica que los detalles de la transacción sean válidos
     if (!paymentData.transaction_details || typeof paymentData.transaction_details.total_paid_amount !== 'number') {
@@ -199,7 +199,7 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
       throw new Error('Detalles de la transacción incompletos');
     }
 
-    const totalPrecio = paymentData.transaction_details.total_paid_amount;
+    const totalPrecio = await paymentData.transaction_details.total_paid_amount;
 
     // Verifica que los items sean válidos
     if (!paymentData.additional_info || !Array.isArray(paymentData.additional_info.items)) {
@@ -208,7 +208,7 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
       throw new Error('Items de la factura no válidos');
     }
 
-    const fechaa = paymentData.money_release_date
+    const fechaa = await paymentData.money_release_date
 
     // Mapeo de los items con validaciones adicionales
     const facturaCreada = await createFactura(
@@ -222,7 +222,7 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
     if (!facturaCreada) {
       console.log(error);
       return;
-    }*/
+    }
 
     // Actualizar el stock
     await Promise.all(
