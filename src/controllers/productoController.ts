@@ -182,7 +182,7 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
     console.log(paymentData);
     const items = paymentData.additional_info.items;
 
-
+/*
     // Verifica que los datos de la tarjeta y el id del producto sean válidos
     if (!paymentData.card || !paymentData.card.cardholder || !paymentData.card.cardholder.identification) {
       console.log('Información de la tarjeta incompleta');
@@ -222,7 +222,7 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
     if (!facturaCreada) {
       console.log(error);
       return;
-    }
+    }*/
 
     // Actualizar el stock
     await Promise.all(
