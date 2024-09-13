@@ -12,7 +12,7 @@ interface fCompraAttributes {
 class fCompra extends Model<fCompraAttributes> implements fCompraAttributes {
   public idFacturaC!: number;  // Auto-incrementable en la base de datos
   public fecha!: String;
-  public subtotal!: number;
+  public subtotal?: number;
   public total!: number;
   public fk_cedula!: string;
 
