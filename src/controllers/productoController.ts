@@ -126,13 +126,13 @@ export const preferences_ = async (req: Request, res: Response): Promise<void> =
         unit_price: Number(product.price),
         currency_id: "COP",
       })),
+      notification_url: "https://gaiavet-back.onrender.com/webhook", // URL del webhook
       back_urls: {
         success: "https://gaia-vet-front-two.vercel.app/products",
         failure: "https://gaia-vet-front-two.vercel.app/products",
         pending: "https://gaia-vet-front-two.vercel.app/products",
       },
       auto_return: "approved",
-      notification_url: "https://gaiavet-back.onrender.com/webhook", // URL del webhook
 
     };
 
