@@ -3,7 +3,7 @@ import Producto from '../models/productoModel';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
 
 
-import { error } from 'console';
+import { error, log } from 'console';
 import DetalleFactura from '../models/detalleFacturaModel';
 import fCompra from '../models/FacturaCompraModel';
 interface Product {
@@ -255,6 +255,8 @@ export const createFactura = async ( fk_cedula: string,  total: number,  items: 
 
     
   } catch (error) {
+    console.log(error);
+    
     return false     
      
   }
