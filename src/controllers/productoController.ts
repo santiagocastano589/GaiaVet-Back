@@ -179,7 +179,7 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
     try {
       res.status(500).json([paymentData.card.cardholder.identification.number,paymentData.transaction_details.total_paid_amount,paymentData.additional_info.items])
 
-      await createFactura(paymentData.card.cardholder.identification.number,paymentData.transaction_details.total_paid_amount,paymentData.additional_info.items)
+      //await createFactura(paymentData.card.cardholder.identification.number,paymentData.transaction_details.total_paid_amount,paymentData.additional_info.items)
     } catch (error) {
       res.status(200).json([paymentData.card.cardholder.identification.number,paymentData.transaction_details.total_paid_amount,paymentData.additional_info.items])
     }
@@ -228,11 +228,8 @@ const updateStock = async (productId: string, count: number): Promise<void> => {
     throw error; // Re-throw error for potential handling in the calling function
   }
 };
-export const createFactura = async (
-  fk_cedula: string, 
-  total: number,
-  items: Array<{ id: number, quantity: number, unit_price: number }>
-): Promise<{ message: string, factura?: any, error?: any }> => {
+export const createFactura = async ( res:Response, fk_cedula: string,  total: number,  items: Array<{ id: number, quantity: number, unit_price: number }>
+): Promise<void> => {
   
   try {
     // 1. Crear la factura (Sequelize generará automáticamente el idFacturaC)
@@ -255,15 +252,12 @@ export const createFactura = async (
     }
 
     // 3. Retornar mensaje de éxito y la factura creada
-    return {
-      message: 'Factura y productos guardados exitosamente',
-      factura: nuevaFactura,
-    };
+    res.status(200).json({message:'Factura y productos guardados exitosamente'})
+    return 
+    
   } catch (error) {
-    console.error('Error al guardar la factura y productos:', error);
-    return {
-      message: 'Error al guardar la factura y productos',
-      error,
-    };
+    res.status(200).json({      message: 'Error al guardar la factura y productos',
+    })
+    return 
   }
 };
