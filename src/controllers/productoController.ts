@@ -176,6 +176,8 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
     }
 
     const paymentData = await response.json();
+    console.log(paymentData);
+    
 
     // Crear la factura
     
