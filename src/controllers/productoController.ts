@@ -177,9 +177,9 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
     }
     const paymentData = await response.json();
     try {
-      //res.status(500).json([paymentData.card.cardholder.identification.number,paymentData.transaction_details.total_paid_amount,paymentData.additional_info.items])
+      res.status(500).json([paymentData.card.cardholder.identification.number,paymentData.transaction_details.total_paid_amount,paymentData.additional_info.items])
 
-      await createFactura(paymentData.card.cardholder.identification.number,paymentData.transaction_details.total_paid_amount,paymentData.additional_info.items)
+      //await createFactura(paymentData.card.cardholder.identification.number,paymentData.transaction_details.total_paid_amount,paymentData.additional_info.items)
     } catch (error) {
       res.status(200).json({message:'NO funca'})
     }
