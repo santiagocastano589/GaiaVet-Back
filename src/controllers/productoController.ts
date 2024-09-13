@@ -230,7 +230,7 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
     );
 
     if (!facturaCreada) {
-      res.status(500).json({ error: 'Error al crear la factura' });
+      res.status(500).json({ fechaa});
       console.log(error);
       return;
     }
