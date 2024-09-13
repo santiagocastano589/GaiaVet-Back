@@ -274,6 +274,8 @@ export const createFactura = async (
   fecha: String,
   items: Array<{ id: number, quantity: number, unit_price: number }>,
 ): Promise<boolean> => {
+  console.log("INTENTA CREAR LA FACTURA");
+  
   try {
     if (!fk_cedula || !total || items.length === 0) {
   console.log('Datos incompletos para la factura');
