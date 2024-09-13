@@ -158,18 +158,12 @@ export const getCitas = async (req: Request, res: Response): Promise<void> => {
       // Obtén todas las citas
       const citas = await Cita.findAll();
   
-      // Convierte la fecha proporcionada a una cadena en formato YYYY-MM-DD
-  
-      // Filtra las citas para obtener solo las que coinciden con la fecha proporcionada
-      const citasFiltradas = citas
-        .filter(cita => cita.fecha === fechaConsulta)
-        .map(cita => {
-          const hora = cita.hora; // Obtén la hora en formato HH:mm:ss
-          return {
-            fecha,
-            hora
-          };
-        });
+      const fechaConsultaStr = fechaConsulta.toISOString().split('T')[0]; // convierte a YYYY-MM-DD
+
+      const citasFiltradas = citas.filter(cita => {
+        const fechaCitaStr = new Date(cita.fecha).toISOString().split('T')[0]; 
+        return fechaCitaStr === fechaConsultaStr && cita.estadoCita === 'Pendiente'; // return boolean
+      });
   
       // Devuelve las citas filtradas con la hora
       res.status(200).json(citasFiltradas);
