@@ -110,7 +110,7 @@ export const getProducts = async (req: Request, res: Response): Promise<void> =>
 const client = new MercadoPagoConfig({ accessToken: 'APP_USR-8827196264162858-081217-755e5d2b5e722ca8f3c7042df40dbed3-1941685779' });
 
 export const preferences_ = async (req: Request, res: Response): Promise<void> => {
-  const products = req.body.products as Product[]; // Type assertion for clarity
+  const products = req.body.products as Product[];
 
   if (!Array.isArray(products)) {
     res.status(400).json({ error: "El campo 'products' debe ser un array" });
@@ -131,10 +131,8 @@ export const preferences_ = async (req: Request, res: Response): Promise<void> =
         failure: "https://gaiavet-back.onrender.com/webhook",
         pending: "https://gaiavet-back.onrender.com/webhook",
       },
-      auto_return: "approved", 
-      notification_url: " https://996c-191-156-47-32.ngrok-free.app/webhook"
-
-
+      auto_return: "approved",
+      notification_url: "https://gaiavet-back.onrender.com/webhook"
     };
 
     const preference = new Preference(client);
@@ -158,7 +156,6 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
   try {
     const payment = req.query;
 
-    // Verifica que el payment_id sea una cadena
     if (typeof payment.payment_id !== 'string') {
       res.status(400).json({ error: 'Payment ID inválido' });
       return;
@@ -182,7 +179,7 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
     console.log(paymentData);
     const items = await paymentData.additional_info.items;
 
-/*
+
     // Verifica que los datos de la tarjeta y el id del producto sean válidos
     if (!paymentData.card || !paymentData.card.cardholder || !paymentData.card.cardholder.identification) {
       console.log('Información de la tarjeta incompleta');
@@ -222,9 +219,9 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
     if (!facturaCreada) {
       console.log(error);
       return;
-    }*/
+    }
 
-    // Actualizar el stock
+//Actualiar el stock de los productos
     await Promise.all(
       items.map(async (item: Item) => {
         const productId = item.id;
