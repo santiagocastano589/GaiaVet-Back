@@ -1,4 +1,4 @@
-import { HttpRequest, HttpResponseInit, InvocationContext } from '@azure/functions';
+import { HttpRequest, HttpResponse, HttpResponseInit, InvocationContext } from '@azure/functions';
 const Handlebars = require('handlebars');
 const { EmailClient } = require("@azure/communication-email");
 const fs = require('fs');
@@ -12,28 +12,39 @@ const client = new EmailClient(connectionString);
 interface EmailRequest {
     subject: string;
     template: string;
-    dataTemplate: { name: string };
+    dataTemplate: {
+        name: string;
+        telefono: string;
+        correo: string;
+        asunto: string;
+        mensaje: string;
+    };
     to: string;
 }
 
 
 function isEmailRequest(data: any): data is EmailRequest {
     return (
-        typeof data.subject === 'string' &&
-        typeof data.template === 'string' &&
-        typeof data.dataTemplate === 'object' &&
-        typeof data.dataTemplate.name === 'string' &&
+        typeof data.subject === 'string' ||
+        typeof data.template === 'string' ||
+        typeof data.dataTemplate === 'object' ||
+        typeof data.dataTemplate.name === 'string' ||
+        typeof data.dataTemplate.telefono === 'string' ||
+        typeof data.dataTemplate.correo === 'string' ||
+        typeof data.dataTemplate.asunto === 'string' ||
+        typeof data.dataTemplate.mensaje === 'string' ||
         typeof data.to === 'string'
     );
 }
 
 
+
 export async function sendEmail(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
     try {
-        
+
         const requestData = await request.json();
 
-        
+
         if (!isEmailRequest(requestData)) {
             return {
                 status: 400,
@@ -43,7 +54,7 @@ export async function sendEmail(request: HttpRequest, context: InvocationContext
 
         const { subject, template, dataTemplate, to } = requestData;
 
-        const templatePath = path.join(__dirname,'../emailTemplates', template);
+        const templatePath = path.join(__dirname, '../emailTemplates', template);
         if (!fs.existsSync(templatePath)) {
             return {
                 status: 404,
@@ -51,10 +62,17 @@ export async function sendEmail(request: HttpRequest, context: InvocationContext
             };
         }
 
-       
+
         const source = fs.readFileSync(templatePath, 'utf-8');
         const compiledTemplate = Handlebars.compile(source);
-        const html = compiledTemplate({ name: dataTemplate.name });
+        const html = compiledTemplate({
+            name: dataTemplate.name,
+            telefono: dataTemplate.telefono,
+            correo: dataTemplate.correo,
+            asunto: dataTemplate.asunto,
+            mensaje: dataTemplate.mensaje
+        });
+        
 
         const emailMessage = {
             senderAddress: "DoNotReply@9c75678d-f78e-4dca-9896-f31f7e1772fc.azurecomm.net",
