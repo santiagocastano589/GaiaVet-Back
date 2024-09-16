@@ -21,7 +21,7 @@ export const NewReview = async (req:CustomRequest,res:Response): Promise<Respons
         const {idReseña,puntuacion,comentario,categoria,fk_idCita}=req.body;
         const cedulaR = user.cedula.toString()
     if (!cedulaR||!puntuacion||!comentario||!categoria||!fk_idCita) {
-        res.status(400).json({message:'Error, Campos Vacios'})
+        return res.status(400).json({message:'Error, Campos Vacios'})
     }
     const reseña = await Reseña.create({idReseña,cedulaR,puntuacion,comentario,categoria,fk_idCita})
         return res.status(200).json(reseña)
