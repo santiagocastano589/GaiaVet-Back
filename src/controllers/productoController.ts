@@ -210,10 +210,7 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
 
     // Mapeo de los items con validaciones adicionales
     const facturaCreada = await createFactura(
-      idProducto,
-      totalPrecio,
-      fechaa,
-      items
+      idProducto,totalPrecio,fechaa,items
       
     );
 
@@ -267,17 +264,16 @@ const updateStock = async (productId: string, count: number): Promise<void> => {
 };
 
 export const createFactura = async (
-  fk_cedula: string,
-  total: number,
-  fecha: String,
-  items: Array<{ id: number, quantity: number, unit_price: number }>,
+  fk_cedula: string, total: number, fecha: String, items: Array<{ id: number, quantity: number, unit_price: number }>,
 ): Promise<boolean> => {
   console.log("INTENTA CREAR LA FACTURA");
   
   try {
+    if (!Array.isArray(items)) {
+      console.error('El parámetro items no es un array:', items);
       
-  const fechaSr = fecha.toString().split('T')[0]; // convierte a YYYY-MM-DD
-
+    }
+    const fechaSr = fecha.toString().split('T')[0]; 
 
     const nuevaFactura = await fCompra.create({fk_cedula,fecha: fechaSr,total});
 
