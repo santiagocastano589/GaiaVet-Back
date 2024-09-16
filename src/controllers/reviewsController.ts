@@ -35,7 +35,7 @@ export const NewReview = async (req:CustomRequest,res:Response): Promise<Respons
 export const Reviews = async (req:Request,res:Response) : Promise<Response>=>{
     const categoria = req.body
     try {
-        const Reseñas = Reseña.findAll({where:categoria});
+        const Reseñas = await Reseña.findAll({where:categoria});
         return res.status(200).json(Reseñas)
     } catch (error) {
         return res.status(404).json({message:"Error al obtener las Reseñas"})
