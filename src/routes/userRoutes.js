@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const userController_1 = require("../controllers/userController");
+const authMiddlaware_1 = require("../middlewares/authMiddlaware");
+const router = (0, express_1.Router)();
+router.put('/user', authMiddlaware_1.authenticate, userController_1.updateUser);
+router.get('/users', authMiddlaware_1.authenticate, (0, authMiddlaware_1.accessRole)('administrador'), userController_1.getAllUsers);
+router.get('/userFind/:cedula', authMiddlaware_1.authenticate, (0, authMiddlaware_1.accessRole)('administrador'), userController_1.findOneUser);
+router.get('/me', authMiddlaware_1.authenticate, userController_1.me);
+router.put('/me/deleteAccount', authMiddlaware_1.authenticate, userController_1.deleteAccount);
+router.post('/register', userController_1.createUser);
+exports.default = router;
