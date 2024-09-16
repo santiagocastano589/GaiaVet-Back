@@ -287,11 +287,7 @@ export const createFactura = async (
     const facturaId = nuevaFactura.idFacturaC;
 
     for (const item of items) {
-      await DetalleFactura.create({
-        fk_idFacturaC: facturaId,
-        fk_idProducto: item.id,
-        cantidad: item.quantity,
-        precioUnitario: item.unit_price,
+      await DetalleFactura.create({fk_idFacturaC: facturaId,fk_idProducto: item.id,cantidad: item.quantity,precioUnitario: item.unit_price
       });
     }
 
