@@ -275,10 +275,7 @@ export const createFactura = async (
   console.log("INTENTA CREAR LA FACTURA");
   
   try {
-    if (!fk_cedula || !total || items.length === 0) {
-  console.log('Datos incompletos para la factura');
-}
-  
+      
   const fechaSr = fecha.toString().split('T')[0]; // convierte a YYYY-MM-DD
 
 
