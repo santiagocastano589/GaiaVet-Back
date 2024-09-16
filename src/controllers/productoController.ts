@@ -131,8 +131,8 @@ export const preferences_ = async (req: Request, res: Response): Promise<void> =
         failure: "https://gaiavet-back.onrender.com/webhook",
         pending: "https://gaiavet-back.onrender.com/webhook",
       },
-      auto_return: "approved",
-      notification_url: "https://gaiavet-back.onrender.com/webhook"// URL del webhook
+      auto_return: "approved", 
+      notification_url: " https://996c-191-156-47-32.ngrok-free.app/webhook"
 
 
     };
