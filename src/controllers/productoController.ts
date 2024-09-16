@@ -282,11 +282,7 @@ export const createFactura = async (
   const fechaSr = fecha.toString().split('T')[0]; // convierte a YYYY-MM-DD
 
 
-    const nuevaFactura = await fCompra.create({
-      fk_cedula,
-      fecha: fechaSr,
-      total,
-    });
+    const nuevaFactura = await fCompra.create({fk_cedula,fecha: fechaSr,total});
 
     const facturaId = nuevaFactura.idFacturaC;
 
