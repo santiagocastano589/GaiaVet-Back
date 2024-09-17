@@ -35,9 +35,10 @@ interface Payment {
 
 export const createProducto = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const { imagen, nombreProducto, categoria, descripcion, stock, precio } = req.body;
+    const {idProducto, imagen, nombreProducto, categoria, descripcion, stock, precio } = req.body;
     
     const nuevoProducto = await Producto.create({
+      idProducto,
       imagen,
       nombreProducto,
       categoria,
