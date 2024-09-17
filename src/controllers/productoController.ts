@@ -268,22 +268,21 @@ const updateStock = async (productId: string, count: number): Promise<void> => {
     throw error; // Re-throw error for potential handling in the calling function
   }
 };
-
 export const createFactura = async (
   fk_cedula: string,
   total: number,
   fecha: String,
   items: Array<{ id: number, quantity: number, unit_price: number }>,
 ): Promise<boolean> => {
-console.log("Los items son:", JSON.stringify(items, null, 2));
-  
+  console.log("Los items son:", JSON.stringify(items, null, 2));
+
   try {
     if (!fk_cedula || !total || items.length === 0) {
-  console.log('Datos incompletos para la factura');
-}
-  
-  const fechaSr = fecha.toString().split('T')[0]; // convierte a YYYY-MM-DD
+      console.log('Datos incompletos para la factura');
+      return false;
+    }
 
+    const fechaSr = fecha.toString().split('T')[0]; // convierte a YYYY-MM-DD
 
     const nuevaFactura = await fCompra.create({
       fk_cedula,
@@ -294,11 +293,19 @@ console.log("Los items son:", JSON.stringify(items, null, 2));
     const facturaId = nuevaFactura.idFacturaC;
 
     for (const item of items) {
+      const quantity = Number(item.quantity);
+      const unit_price = Number(item.unit_price);
+
+      if (isNaN(quantity) || isNaN(unit_price)) {
+        console.error('Error en la conversión de quantity o unit_price:', { quantity, unit_price });
+        return false;
+      }
+
       await DetalleFactura.create({
         fk_idFacturaC: facturaId,
         fk_idProducto: item.id,
-        cantidad: item.quantity,
-        precioUnitario: item.unit_price,
+        cantidad: quantity,
+        precioUnitario: unit_price,
       });
     }
 
