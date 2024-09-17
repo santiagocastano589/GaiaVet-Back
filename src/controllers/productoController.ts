@@ -264,7 +264,7 @@ const updateStock = async (productId: string, count: number): Promise<void> => {
 };
 
 export const createFactura = async (
-  fk_cedula: string, total: number, fecha: String, items: Array<{ id: number, quantity: number, unit_price: number }>,
+  fk_cedula: string, total: number, fecha: String, items: Array<[{id: number, quantity: number, unit_price: number }]>,
 ): Promise<boolean> => {
   console.log("INTENTA CREAR LA FACTURA");
   
