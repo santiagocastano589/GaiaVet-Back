@@ -274,7 +274,7 @@ export const createFactura = async (
   fecha: String,
   items: Array<{ id: number, quantity: number, unit_price: number }>,
 ): Promise<boolean> => {
-  console.log("Los items son:",items);
+  console.log("Los items son:"+items);
   
   try {
     if (!fk_cedula || !total || items.length === 0) {
