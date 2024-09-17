@@ -11,6 +11,7 @@ export const NewReview = async (req:CustomRequest,res:Response): Promise<Respons
     
     const correo = req['user']['correo']
     const user = await User.findOne({where:{correo}}) 
+    const cedulaR = user?.cedula
 
     if (!user) {
         return res.status(404).json('Error al encontrar el usuario')
@@ -19,8 +20,8 @@ export const NewReview = async (req:CustomRequest,res:Response): Promise<Respons
 
         const {idReseña,puntuacion,comentario,categoria,fk_idCita}=req.body;
         const cedulaR = user.cedula.toString()
-    if (!idReseña||!cedulaR||!puntuacion||!comentario||!categoria||!fk_idCita) {
-        res.status(400).json({message:'Error, Campos Vacios'})
+    if (!cedulaR||!puntuacion||!comentario||!categoria||!fk_idCita) {
+        return res.status(400).json({message:'Error, Campos Vacios'})
     }
     const reseña = await Reseña.create({idReseña,cedulaR,puntuacion,comentario,categoria,fk_idCita})
         return res.status(200).json(reseña)
@@ -34,7 +35,7 @@ export const NewReview = async (req:CustomRequest,res:Response): Promise<Respons
 export const Reviews = async (req:Request,res:Response) : Promise<Response>=>{
     const categoria = req.body
     try {
-        const Reseñas = Reseña.findAll({where:categoria});
+        const Reseñas = await Reseña.findAll({where:categoria});
         return res.status(200).json(Reseñas)
     } catch (error) {
         return res.status(404).json({message:"Error al obtener las Reseñas"})

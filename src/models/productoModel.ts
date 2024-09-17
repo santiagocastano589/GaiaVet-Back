@@ -2,7 +2,7 @@ import { DataTypes, Model } from 'sequelize';
 import sequelize from '../db/connection';
 
 interface ProductoAttributes {
-  idProducto?: number;
+  idProducto: number;
   imagen?: string;
   nombreProducto: string;
   categoria: string;
@@ -26,7 +26,6 @@ class Producto extends Model<ProductoAttributes> implements ProductoAttributes {
         idProducto: {
           type: DataTypes.INTEGER.UNSIGNED,
           primaryKey: true,
-          autoIncrement: true,
         },
         imagen: {
           type: DataTypes.STRING(1000),

@@ -35,9 +35,10 @@ interface Payment {
 
 export const createProducto = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const { imagen, nombreProducto, categoria, descripcion, stock, precio } = req.body;
+    const { idProducto,imagen, nombreProducto, categoria, descripcion, stock, precio } = req.body;
     
     const nuevoProducto = await Producto.create({
+      idProducto,
       imagen,
       nombreProducto,
       categoria,
@@ -110,7 +111,7 @@ export const getProducts = async (req: Request, res: Response): Promise<void> =>
 const client = new MercadoPagoConfig({ accessToken: 'APP_USR-8827196264162858-081217-755e5d2b5e722ca8f3c7042df40dbed3-1941685779' });
 
 export const preferences_ = async (req: Request, res: Response): Promise<void> => {
-  const products = req.body.products as Product[]; // Type assertion for clarity
+  const products = req.body.products as Product[];
 
   if (!Array.isArray(products)) {
     res.status(400).json({ error: "El campo 'products' debe ser un array" });
@@ -132,9 +133,7 @@ export const preferences_ = async (req: Request, res: Response): Promise<void> =
         pending: "https://gaiavet-back.onrender.com/webhook",
       },
       auto_return: "approved",
-      notification_url: "https://gaiavet-back.onrender.com/webhook"// URL del webhook
-
-
+      notification_url: "https://gaiavet-back.onrender.com/webhook"
     };
 
     const preference = new Preference(client);
@@ -158,7 +157,6 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
   try {
     const payment = req.query;
 
-    // Verifica que el payment_id sea una cadena
     if (typeof payment.payment_id !== 'string') {
       res.status(400).json({ error: 'Payment ID inválido' });
       return;
@@ -212,10 +210,7 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
 
     // Mapeo de los items con validaciones adicionales
     const facturaCreada = await createFactura(
-      idProducto,
-      totalPrecio,
-      fechaa,
-      items
+      idProducto,totalPrecio,fechaa,items
       
     );
 
@@ -224,7 +219,7 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    // Actualizar el stock
+//Actualiar el stock de los productos
     await Promise.all(
       items.map(async (item: Item) => {
         const productId = item.id;
@@ -236,7 +231,7 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
       })
     );
 
-    res.status(200).json(paymentData);
+    res.status(200).json({message:"Compra Exitosa!!"});
 
   } catch (error) {
     console.error('Error en el webhook:', error);
@@ -269,35 +264,23 @@ const updateStock = async (productId: string, count: number): Promise<void> => {
 };
 
 export const createFactura = async (
-  fk_cedula: string,
-  total: number,
-  fecha: String,
-  items: Array<{ id: number, quantity: number, unit_price: number }>,
+  fk_cedula: string, total: number, fecha: String, items: Array<{ id: number, quantity: number, unit_price: number }>,
 ): Promise<boolean> => {
   console.log("INTENTA CREAR LA FACTURA");
   
   try {
-    if (!fk_cedula || !total || items.length === 0) {
-  console.log('Datos incompletos para la factura');
-}
-  
-  const fechaSr = fecha.toString().split('T')[0]; // convierte a YYYY-MM-DD
+    if (!Array.isArray(items)) {
+      console.error('El parámetro items no es un array:', items);
+      
+    }
+    const fechaSr = fecha.toString().split('T')[0]; 
 
-
-    const nuevaFactura = await fCompra.create({
-      fk_cedula,
-      fecha: fechaSr,
-      total,
-    });
+    const nuevaFactura = await fCompra.create({fk_cedula,fecha: fechaSr,total});
 
     const facturaId = nuevaFactura.idFacturaC;
 
     for (const item of items) {
-      await DetalleFactura.create({
-        fk_idFacturaC: facturaId,
-        fk_idProducto: item.id,
-        cantidad: item.quantity,
-        precioUnitario: item.unit_price,
+      await DetalleFactura.create({fk_idFacturaC: facturaId,fk_idProducto: item.id,cantidad: item.quantity,precioUnitario: item.unit_price
       });
     }
 
