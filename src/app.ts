@@ -21,6 +21,8 @@ import  sendEmailRoutes from './routes/sendEmailRoutes';
 import reviewsRoutes from './routes/reviewsRoutes'
 import reviewsModel from './models/reviewsModel'
 import  contactInfoRoutes  from './routes/contactInfoRoutes';
+import  HistoryPetRotes  from './routes/HistoryPetRoutes';
+
 dotenv.config();
 
 const app: Application = express();
@@ -45,6 +47,7 @@ app.use('/', citaRoutes);
 app.use('/',sendEmailRoutes);
 app.use('/',reviewsRoutes)
 app.use('/',contactInfoRoutes)
+app.use('/',HistoryPetRotes)
 
 
 app.listen(port, () => {
