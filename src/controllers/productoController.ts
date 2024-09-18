@@ -239,10 +239,12 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
     );
 
     res.status(200).json(paymentData);
+    return
 
   } catch (error) {
     console.error('Error en el webhook:', error);
     res.status(500).json({ error: 'Internal Server Error' });
+    return
   }
 };
 //  money_release_date: '2024-09-13T10:09:27.000-04:00',
