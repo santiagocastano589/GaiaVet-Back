@@ -277,17 +277,14 @@ export const createFactura = async (
   console.log("Los items son:", JSON.stringify(items, null, 2));
 
   try {
-    if (!fk_cedula || !total) {
-      console.log('Datos incompletos para la factura');
-      return false;
-    }
+ 
 
-    const fechaSr = fecha.toString().split('T')[0]; // convierte a YYYY-MM-DD
-
+    const fechaSr =  fecha.toString().split('T')[0]; // convierte a YYYY-MM-DD
+  
     const nuevaFactura = await fCompra.create({
-      fk_cedula,
       fecha: fechaSr,
-      total
+      total:total,
+      fk_cedula:fk_cedula
     });
 
     try {
