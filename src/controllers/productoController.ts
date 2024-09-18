@@ -128,9 +128,9 @@ export const preferences_ = async (req: Request, res: Response): Promise<void> =
         currency_id: "COP",
       })),
       back_urls: {
-        success: "https://gaiavet-back.onrender.com/webhook",
-        failure: "https://gaiavet-back.onrender.com/webhook",
-        pending: "https://gaiavet-back.onrender.com/webhook",
+        success: "https://gaia-vet-front-two.vercel.app/products",
+        failure: "https://gaia-vet-front-two.vercel.app/products",
+        pending: "https://gaia-vet-front-two.vercel.app/products",
       },
       auto_return: "approved",
       notification_url: "https://gaiavet-back.onrender.com/webhook"// URL del webhook
