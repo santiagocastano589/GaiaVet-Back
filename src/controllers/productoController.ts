@@ -277,7 +277,7 @@ export const createFactura = async (
   console.log("Los items son:", JSON.stringify(items, null, 2));
 
   try {
-    if (!fk_cedula || !total || items.length === 0) {
+    if (!fk_cedula || !total) {
       console.log('Datos incompletos para la factura');
       return false;
     }
@@ -287,19 +287,16 @@ export const createFactura = async (
     const nuevaFactura = await fCompra.create({
       fk_cedula,
       fecha: fechaSr,
-      total,
+      total
     });
 
+    try {
+      
     const facturaId = nuevaFactura.idFacturaC;
 
     for (const item of items) {
       const quantity = Number(item.quantity);
       const unit_price = Number(item.unit_price);
-
-      if (isNaN(quantity) || isNaN(unit_price)) {
-        console.error('Error en la conversión de quantity o unit_price:', { quantity, unit_price });
-        return false;
-      }
 
       await DetalleFactura.create({
         fk_idFacturaC: facturaId,
@@ -310,6 +307,12 @@ export const createFactura = async (
     }
 
     return true;
+    } catch (error) {
+      console.log("eRROR",error);
+      
+    }
+    return false
+
   } catch (error) {
     console.error('Error al crear la factura:', error);
     return false;
