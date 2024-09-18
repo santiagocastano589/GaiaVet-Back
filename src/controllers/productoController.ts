@@ -156,7 +156,6 @@ export const preferences_ = async (req: Request, res: Response): Promise<void> =
 
 
 export const webhook = async (req: Request, res: Response): Promise<void> => {
-  console.log("HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
   try {
     const payment = req.query;
 
@@ -238,7 +237,8 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
       })
     );
 
-    res.status(200).json(paymentData);
+    res.redirect('/https://gaia-vet-front-two.vercel.app/products');
+
     return
 
   } catch (error) {
