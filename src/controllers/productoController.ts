@@ -308,7 +308,7 @@ export const createFactura = async (
 
     return true;
     } catch (error) {
-      console.log("eRROR",error);
+      console.error("eRROR",error);
       
     }
     return false
