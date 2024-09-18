@@ -237,7 +237,7 @@ export const webhook = async (req: Request, res: Response): Promise<void> => {
       })
     );
 
-    res.redirect('/https://gaia-vet-front-two.vercel.app/products');
+    res.redirect('https://gaia-vet-front-two.vercel.app/products');
 
     return
 
