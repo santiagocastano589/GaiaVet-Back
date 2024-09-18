@@ -21,6 +21,8 @@ import  sendEmailRoutes from './routes/sendEmailRoutes';
 import reviewsRoutes from './routes/reviewsRoutes'
 import reviewsModel from './models/reviewsModel'
 import  contactInfoRoutes  from './routes/contactInfoRoutes';
+import fCompra from './models/FacturaCompraModel';
+import DetalleFactura from './models/detalleFacturaModel';
 dotenv.config();
 
 const app: Application = express();
@@ -35,6 +37,8 @@ Mascota.initModel();
 Producto.initModel();
 Cita.initModel();
 reviewsModel.initModel();
+fCompra.initModel();
+DetalleFactura.initModel();
 app.use('/', userRoutes);
 app.use('/auth', authRoutes);
 app.use('/', adminRoutes);

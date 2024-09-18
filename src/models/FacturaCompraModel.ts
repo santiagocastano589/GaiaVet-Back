@@ -42,7 +42,7 @@ class fCompra extends Model<fCompraAttributes> implements fCompraAttributes {
           references:{
             model:'usuario',
             key:'cedula'
-          },
+          }
         }
       },
       {
