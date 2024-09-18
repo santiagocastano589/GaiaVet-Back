@@ -156,6 +156,7 @@ export const preferences_ = async (req: Request, res: Response): Promise<void> =
 
 
 export const webhook = async (req: Request, res: Response): Promise<void> => {
+  console.log("HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
   try {
     const payment = req.query;
 
