@@ -5,7 +5,6 @@ import { Request, Response } from 'express';
 import Admin from "../models/adminModel";
 import Mascota from "../models/petModel";
 import moment from 'moment-business-days'; 
-import { Op } from "sequelize";
 
 
 
@@ -18,7 +17,7 @@ export const newCita = async (req: CustomRequest, res: Response): Promise<void> 
       return;
     }
 
-    const { idCita,tipoCita, fecha,hora, tipoMascota, estadoCita,fk_id_mascota, fk_cc_Empleado } = req.body;
+      const { idCita,tipoCita, fecha,hora, tipoMascota, estadoCita,fk_id_mascota, fk_cc_Empleado } = req.body;
 
     try {
         const admin = await Admin.findByPk(159753);
@@ -143,19 +142,13 @@ export const getCitas = async (req: Request, res: Response): Promise<void> => {
 
   export const GetAppointmentDate = async (req: Request, res: Response): Promise<void> => {
     try {
-      // Obtén la fecha desde los parámetros de la solicitud
       const { fecha } = req.params;
-  
-      // Convierte la fecha proporcionada en un objeto Date
       const fechaConsulta = new Date(fecha);
-  
-      // Verifica si la fecha es válida
       if (isNaN(fechaConsulta.getTime())) {
         res.status(400).json({ error: 'Fecha inválida.' });
         return;
       }
   
-      // Obtén todas las citas
       const citas = await Cita.findAll();
   
       const fechaConsultaStr = fechaConsulta.toISOString().split('T')[0]; // convierte a YYYY-MM-DD
@@ -165,10 +158,49 @@ export const getCitas = async (req: Request, res: Response): Promise<void> => {
         return fechaCitaStr === fechaConsultaStr && cita.estadoCita === 'Pendiente'; // return boolean
       });
   
-      // Devuelve las citas filtradas con la hora
       res.status(200).json(citasFiltradas);
     } catch (error) {
       console.error('Error al obtener citas:', error);
       res.status(500).json({ error: 'Error al obtener citas' });
     }
   };
+
+
+  
+  export const AdminCita = async (req: Request, res: Response): Promise<void> => {
+    const { idCita,idPet, tipoCita, fecha, hora, estadoCita, fk_cc_Empleado } = req.body;
+  
+    try {
+      const pet = await Mascota.findByPk(idPet);
+  
+      if (!pet) {
+        res.status(404).json({ error: 'Mascota no encontrada' });
+        return;
+      }
+  
+      const user = await User.findByPk(pet.fk_cedulaU); 
+      if (!user) {
+        res.status(404).json({ error: 'Usuario dueño de la mascota no encontrado' });
+        return;
+      }
+  
+      const nuevaCita = await Cita.create({
+        idCita,
+        tipoCita,
+        fecha,
+        hora,
+        tipoMascota: pet.TipoMascota, 
+        estadoCita,
+        fk_id_mascota: idPet,
+        fk_cc_Empleado,       });
+  
+      res.status(201).json(nuevaCita);
+  
+    } catch (error) {
+      console.error('Error al crear la cita:', error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    }
+  };
+  
+
+  
