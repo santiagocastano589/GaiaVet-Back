@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { accessRole, authenticate } from '../middlewares/authMiddlaware';
 
-import { newCita,updateCitaEstado,getCitas, getUserAppointment, updateCita, GetAppointmentDate } from '../controllers/citaController';
+import { newCita,updateCitaEstado,getCitas, getUserAppointment, updateCita,AdminCita, GetAppointmentDate } from '../controllers/citaController';
 
 const router = Router()
 
@@ -11,6 +11,7 @@ router.put('/updateStatusAppointment/:id',authenticate,updateCitaEstado)
 router.get('/getPendingAppointment',authenticate,accessRole(['administrador','empleado']),getCitas)
 router.get('/getUserAppointment',authenticate,accessRole(['User']),getUserAppointment)
 router.get('/GetAppointments/:fecha',authenticate,accessRole(['User','empleado','administrador']),GetAppointmentDate)
+router.post('/newsAppointment',authenticate,accessRole(['administrador']),AdminCita);
 
 
 export default router;
