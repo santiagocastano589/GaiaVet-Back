@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createPet ,getAllPet,findPetsUser,updatePet, deletePet, petsUser} from '../controllers/petControllers';
+import { createPet ,getAllPet,findPetsUser,updatePet, deletePet, petsUser,registerPet} from '../controllers/petControllers';
 import { authenticate,accessRole } from '../middlewares/authMiddlaware';
 
 
