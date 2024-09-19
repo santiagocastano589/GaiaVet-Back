@@ -137,3 +137,28 @@ export const petsUser = async (req: Request, res: Response): Promise<void> => {
     res.status(500).json({ message: 'Error al encontrar la mascota.' });
   }
 };
+
+
+
+export const registerPet = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { nombre, edad, raza, peso, temperamento, foto,Estado,TipoMascota,cedula } = req.body;
+
+    const user = await User.findOne({ where: { cedula } });
+    if (!user) {
+      res.status(404).json({ message: 'Error: Usuario no encontrado' });
+      return;
+    }
+    if (!nombre || !edad || !raza || !peso || !temperamento || !foto ) {
+      res.status(400).json({message:'Error Campos vacios'})
+      return
+    }
+
+
+    const fk_cedulaU = cedula+"";
+    const newPet = await Mascota.create({ nombre, edad, raza, TipoMascota, peso, temperamento, foto, fk_cedulaU,Estado}); 
+    res.status(201).json(newPet);
+  } catch (error) {
+    res.status(500).json({ message: 'Error al crear la mascota' });
+  }
+};
