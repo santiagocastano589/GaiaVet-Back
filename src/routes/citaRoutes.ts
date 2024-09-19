@@ -11,7 +11,7 @@ router.put('/updateStatusAppointment/:id',authenticate,updateCitaEstado)
 router.get('/getPendingAppointment',authenticate,accessRole(['administrador','empleado']),getCitas)
 router.get('/getUserAppointment',authenticate,accessRole(['User']),getUserAppointment)
 router.get('/GetAppointments/:fecha',authenticate,accessRole(['User','empleado','administrador']),GetAppointmentDate)
-router.post('/newsAppointment',authenticate,accessRole(['administrador']),AdminCita);
+router.post('/newsAppointment',AdminCita);
 
 
 export default router;

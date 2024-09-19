@@ -169,6 +169,8 @@ export const getCitas = async (req: Request, res: Response): Promise<void> => {
   
   export const AdminCita = async (req: Request, res: Response): Promise<void> => {
     const { idCita,idPet, tipoCita, fecha, hora, estadoCita, fk_cc_Empleado } = req.body;
+    const admin = await Admin.findByPk(159753);
+    const fk_nit = admin?.nit
   
     try {
       const pet = await Mascota.findByPk(idPet);
@@ -192,7 +194,8 @@ export const getCitas = async (req: Request, res: Response): Promise<void> => {
         tipoMascota: pet.TipoMascota, 
         estadoCita,
         fk_id_mascota: idPet,
-        fk_cc_Empleado,       });
+        fk_cc_Empleado, 
+      fk_nit      });
   
       res.status(201).json(nuevaCita);
   
