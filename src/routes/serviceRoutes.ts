@@ -7,4 +7,4 @@ const router = Router();
 router.post('/sellService', authenticate,accessRole('administrador'), services); 
  
 
-export default routergit add .
+export default router;
