@@ -16,8 +16,9 @@ import Producto from './models/productoModel';
 import productRoutes from "./routes/productRoutes";
 import  sendEmailRoutes from './routes/sendEmailRoutes';
 import iaRoutes from './routes/iaRoutes'
-import { contactInfo } from './controllers/contactInfoController';
-
+import  contactInfoRoutes  from './routes/coctactInfoRoutes';
+import generateCodeRoutes from "./routes/generateCodeRoutes"
+import forgotPasswordRoutes from "./routes/forgotPasswordRoutes";
 
 User.initModel();
 Empleado.initModel();
@@ -50,7 +51,10 @@ app.use('/',appointmentRoutes)
 app.use('/',productRoutes)
 app.use('/',sendEmailRoutes)
 app.use('/',iaRoutes)
-app.use('/',contactInfo)
+app.use('/',contactInfoRoutes)
+app.use('/',generateCodeRoutes)
+app.use('/',forgotPasswordRoutes)
+
 
 app.listen(port, () => {
   async function testConnection() {

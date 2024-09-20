@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Código de Recuperación</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #4CAF50;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>¡Hola, {{ name}}!</h1>
+        <p>Hemos recibido una solicitud para restablecer tu contraseña.</p>
+        <p>Tu código de recuperación es: <strong>{{codigo}}</strong></p>
+        <p>Este código es válido por 10 minutos. Si no solicitaste este cambio, simplemente ignora este mensaje.</p>
+        <p>Si tienes alguna pregunta, no dudes en ponerte en contacto con nosotros.</p>
+    </div>
+    <div class="footer">
+        <p>Gracias,</p>
+        <p>El equipo de GaiaVet</p>
+    </div>
+</body>
+</html>

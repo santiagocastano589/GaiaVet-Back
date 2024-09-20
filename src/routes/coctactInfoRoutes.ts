@@ -6,3 +6,5 @@ const router = Router()
 
 
 router.post('/contact',contactInfo)
+
+export default router
