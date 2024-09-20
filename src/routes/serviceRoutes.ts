@@ -4,6 +4,7 @@ import { services } from '../controllers/citaController';
 
 
 const router = Router();
-router.put('/sellService', authenticate, services); 
+router.put('/sellService', authenticate,accessRole('administrador'), services); 
  
 
+export default router

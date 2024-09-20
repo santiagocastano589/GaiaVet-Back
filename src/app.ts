@@ -24,6 +24,8 @@ import  contactInfoRoutes  from './routes/contactInfoRoutes';
 import fCompra from './models/FacturaCompraModel';
 import DetalleFactura from './models/detalleFacturaModel';
 import iaRoutes from './routes/iaRoutes'
+import serviceRoutes from './routes/serviceRoutes'
+
 dotenv.config();
 
 const app: Application = express();
@@ -52,6 +54,7 @@ app.use('/',sendEmailRoutes);
 app.use('/',reviewsRoutes)
 app.use('/',contactInfoRoutes)
 app.use('/',iaRoutes)
+app.use('/',serviceRoutes)
 
 app.listen(port, () => {
   async function testConnection() {
