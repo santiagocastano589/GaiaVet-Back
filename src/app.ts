@@ -26,6 +26,8 @@ import DetalleFactura from './models/detalleFacturaModel';
 import iaRoutes from './routes/iaRoutes'
 import serviceRoutes from './routes/serviceRoutes'
 
+import generateCodeRoutes  from "./routes/generateCodeRoutes";
+import forgotPasswordRoutes from "./routes/forgotPasswordRoutes";
 dotenv.config();
 
 const app: Application = express();
@@ -55,6 +57,9 @@ app.use('/',reviewsRoutes)
 app.use('/',contactInfoRoutes)
 app.use('/',iaRoutes)
 app.use('/',serviceRoutes)
+app.use('/',generateCodeRoutes)
+app.use('/',forgotPasswordRoutes)
+
 
 app.listen(port, () => {
   async function testConnection() {

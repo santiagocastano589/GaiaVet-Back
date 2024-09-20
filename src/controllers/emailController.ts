@@ -18,6 +18,7 @@ interface EmailRequest {
         correo: string;
         asunto: string;
         mensaje: string;
+        codigo:string;
     };
     to: string;
 }
@@ -33,6 +34,7 @@ function isEmailRequest(data: any): data is EmailRequest {
         typeof data.dataTemplate.correo === 'string' ||
         typeof data.dataTemplate.asunto === 'string' ||
         typeof data.dataTemplate.mensaje === 'string' ||
+        typeof data.dataTemplate.codigo === 'string' ||
         typeof data.to === 'string'
     );
 }
@@ -70,7 +72,8 @@ export async function sendEmail(request: HttpRequest, context: InvocationContext
             telefono: dataTemplate.telefono,
             correo: dataTemplate.correo,
             asunto: dataTemplate.asunto,
-            mensaje: dataTemplate.mensaje
+            mensaje: dataTemplate.mensaje,
+            codigo: dataTemplate.codigo
         });
         
 
