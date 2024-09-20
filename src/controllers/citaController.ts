@@ -5,6 +5,8 @@ import { Request, Response } from 'express';
 import Admin from "../models/adminModel";
 import Mascota from "../models/petModel";
 import moment from 'moment-business-days'; 
+import Factura from "../models/FacturaVentaModel";
+import { MercadoPagoConfig, Preference } from 'mercadopago';
 
 
 
@@ -206,4 +208,32 @@ export const getCitas = async (req: Request, res: Response): Promise<void> => {
   };
   
 
+  export const services = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { idFactura, tipoFactura, fechaFactura, total, fk_idCita, fk_nit,metodo } = req.body;
+  
+      const cita = await Cita.findByPk(fk_idCita);
+      if (!cita) {
+        res.status(404).json({ message: "No se encontró una cita con ese ID" });
+        return;
+      }
+  
+      const factura = await Factura.create({
+        idFactura,
+        tipoFactura,
+        fechaFactura,
+        total,
+        fk_nit,
+        fk_idCita,
+        metodo
+      });
+  
+      res.status(201).json({
+        message: "Factura creada exitosamente",
+        factura,
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Error al crear la factura", error });
+    }
+  };
   
