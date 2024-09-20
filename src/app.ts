@@ -23,6 +23,7 @@ import reviewsModel from './models/reviewsModel'
 import  contactInfoRoutes  from './routes/contactInfoRoutes';
 import fCompra from './models/FacturaCompraModel';
 import DetalleFactura from './models/detalleFacturaModel';
+import iaRoutes from './routes/iaRoutes'
 dotenv.config();
 
 const app: Application = express();
@@ -39,6 +40,7 @@ Cita.initModel();
 reviewsModel.initModel();
 fCompra.initModel();
 DetalleFactura.initModel();
+
 app.use('/', userRoutes);
 app.use('/auth', authRoutes);
 app.use('/', adminRoutes);
@@ -49,7 +51,7 @@ app.use('/', citaRoutes);
 app.use('/',sendEmailRoutes);
 app.use('/',reviewsRoutes)
 app.use('/',contactInfoRoutes)
-
+app.use('/',iaRoutes)
 
 app.listen(port, () => {
   async function testConnection() {
